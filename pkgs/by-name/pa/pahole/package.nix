@@ -35,6 +35,7 @@ stdenv.mkDerivation rec {
       musl-obstack
     ];
 
+  # https://github.com/acmel/dwarves/pull/51
   patches = [ ./threading-reproducibility.patch ];
 
   # Put libraries in "lib" subdirectory, not top level of $out
