@@ -5,18 +5,14 @@ in
 {
   openssh = common rec {
     pname = "openssh";
-    version = "9.7p1";
+    version = "9.8p1";
 
     src = fetchurl {
       url = "mirror://openbsd/OpenSSH/portable/openssh-${version}.tar.gz";
-      hash = "sha256-SQQm92bYKidj/KzY2D6j1weYdQx70q/y5X3FZg93P/0=";
+      hash = "sha256-3YvQAqN5tdSZ37BQ3R+pr4Ap6ARh9LtsUjxJlz9aOfM=";
     };
 
-    extraPatches = [
-      ./ssh-keysign-8.5.patch
-      ./openssh-9.6_p1-CVE-2024-6387.patch
-      ./openssh-9.6_p1-chaff-logic.patch
-    ];
+    extraPatches = [ ./ssh-keysign-8.5.patch ];
     extraMeta.maintainers = lib.teams.helsinki-systems.members;
   };
 
