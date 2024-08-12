@@ -37,8 +37,10 @@ buildPythonPackage rec {
 
   checkPhase = ''
     mv capstone capstone.hidden
-    patchShebangs test_*
-    make check
+    pushd tests
+      patchShebangs test_*
+      make -f ../Makefile check
+    popd
   '';
 
   meta = with lib; {
