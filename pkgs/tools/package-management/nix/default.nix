@@ -173,8 +173,8 @@ in lib.makeExtensible (self: ({
   };
 
   nix_2_24 = (common {
-    version = "2.24.9";
-    hash = "sha256-OwJByTdCz1t91ysBqynK+ifszkoIGEXUn6HE2t82+c8=";
+    version = "2.24.10";
+    hash = "sha256-XdeVy1/d6DEIYb3nOA6JIYF4fwMKNxtwJMgT3pHi+ko=";
     self_attribute_name = "nix_2_24";
     patches = [
       ./patches/2_24/0001-fix-Run-all-derivation-builders-inside-the-sandbox-o.patch
