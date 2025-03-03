@@ -76,15 +76,6 @@ stdenv.mkDerivation rec {
 
   patches = [
     ./nix-ssl-cert-file.patch
-    # Revert https://gitlab.com/gnutls/gnutls/-/merge_requests/1800
-    # dlopen isn't as easy in NixPkgs, as noticed in tests broken by this.
-    # Without getting the libs into RPATH they won't be found.
-    (fetchpatch2 {
-      name = "revert-dlopen-compression.patch";
-      url = "https://gitlab.com/gnutls/gnutls/-/commit/8584908d6b679cd4e7676de437117a793e18347c.diff";
-      revert = true;
-      hash = "sha256-r/+Gmwqy0Yc1LHL/PdPLXlErUBC5JxquLzCBAN3LuRM=";
-    })
   ];
 
   # Skip some tests:
@@ -114,6 +105,8 @@ stdenv.mkDerivation rec {
       (lib.enableFeature cxxBindings "cxx")
     ] ++ lib.optionals (stdenv.hostPlatform.isMinGW) [
       "--disable-doc"
+    ] ++ [ # do not dlopen in nixpkgs
+        "--with-zlib=link"
     ];
 
   enableParallelBuilding = true;
