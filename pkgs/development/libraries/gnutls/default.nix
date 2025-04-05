@@ -7,7 +7,6 @@
 , libtasn1
 , nettle
 , pkg-config
-, lzip
 , perl
 , gmp
 , autoconf
@@ -113,7 +112,7 @@ stdenv.mkDerivation rec {
 
   hardeningDisable = [ "trivialautovarinit" ];
 
-  buildInputs = [ lzo lzip libtasn1 libidn2 zlib gmp libunistring unbound gettext libiconv ]
+  buildInputs = [ lzo libtasn1 libidn2 zlib gmp libunistring unbound gettext libiconv ]
     ++ lib.optional (withP11-kit) p11-kit
     ++ lib.optional (tpmSupport && stdenv.isLinux) trousers;
 
