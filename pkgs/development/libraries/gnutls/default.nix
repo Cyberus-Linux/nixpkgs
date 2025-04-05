@@ -3,7 +3,6 @@
 , fetchurl
 , fetchpatch2
 , zlib
-, lzo
 , libtasn1
 , nettle
 , pkg-config
@@ -112,7 +111,7 @@ stdenv.mkDerivation rec {
 
   hardeningDisable = [ "trivialautovarinit" ];
 
-  buildInputs = [ lzo libtasn1 libidn2 zlib gmp libunistring unbound gettext libiconv ]
+  buildInputs = [ libtasn1 libidn2 zlib gmp libunistring unbound gettext libiconv ]
     ++ lib.optional (withP11-kit) p11-kit
     ++ lib.optional (tpmSupport && stdenv.isLinux) trousers;
 
