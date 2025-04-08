@@ -116,14 +116,14 @@ in
       distroId = mkOption {
         internal = true;
         type = types.str;
-        default = "nixos";
+        default = "ctrlos";
         description = "The id of the operating system";
       };
 
       distroName = mkOption {
         internal = true;
         type = types.str;
-        default = "NixOS";
+        default = "CtrlOS";
         description = "The name of the operating system";
       };
 
