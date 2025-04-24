@@ -20,7 +20,8 @@ update_channel:
       'git archive --format=tar --prefix=ctrlos-$(git rev-parse HEAD)/ HEAD | xz -v -9 > tarball/ctrlos-$(git rev-parse HEAD).tar.xz'
     - nix shell github:cyberus-technology/s3-nix-channel --command sh -c
       "s3-nix-channel-upload publish $CTRLOS_CHANNEL_BUCKET ctrlos-24.05 tarball/*"
-  when: manual
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "ctrlos-24.05"'
   artifacts:
     paths:
       - tarball/
