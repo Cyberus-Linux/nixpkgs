@@ -1,49 +1,51 @@
-{
-  callPackage,
-  lib,
-  fetchurl,
-  fetchpatch,
-  autoreconfHook,
-}:
+{ callPackage, lib, fetchurl, fetchpatch, autoreconfHook }:
 let
   common = opts: callPackage (import ./common.nix opts) { };
+
+  # Gets the correct OpenSSH URL for a given version.
+  urlFor =
+    version:
+    let
+      urlVersion =
+        {
+          # 10.0p1 was accidentally released as 10.0p2:
+          # https://www.openwall.com/lists/oss-security/2025/04/09/6
+          "10.0p2" = "10.0p1";
+        }
+        .${version} or version;
+    in
+    "mirror://openbsd/OpenSSH/portable/openssh-${urlVersion}.tar.gz";
 in
 {
   openssh = common rec {
     pname = "openssh";
-    version = "9.7p1";
+    version = "10.0p2";
 
     src = fetchurl {
-      url = "mirror://openbsd/OpenSSH/portable/openssh-${version}.tar.gz";
-      hash = "sha256-SQQm92bYKidj/KzY2D6j1weYdQx70q/y5X3FZg93P/0=";
+      url = urlFor version;
+      hash = "sha256-AhoucJoO30JQsSVr1anlAEEakN3avqgw7VnO+Q652Fw=";
     };
 
-    extraPatches = [
-      ./ssh-keysign-8.5.patch
-      ./openssh-9.6_p1-CVE-2024-6387.patch
-      ./openssh-9.6_p1-chaff-logic.patch
-    ];
+    extraPatches = [ ./ssh-keysign-8.5.patch ];
     extraMeta.maintainers = lib.teams.helsinki-systems.members;
   };
 
   openssh_hpn = common rec {
     pname = "openssh-with-hpn";
-    version = "9.7p1";
+    version = "10.0p2";
     extraDesc = " with high performance networking patches";
 
     src = fetchurl {
-      url = "mirror://openbsd/OpenSSH/portable/openssh-${version}.tar.gz";
-      hash = "sha256-SQQm92bYKidj/KzY2D6j1weYdQx70q/y5X3FZg93P/0=";
+      url = urlFor version;
+      hash = "sha256-AhoucJoO30JQsSVr1anlAEEakN3avqgw7VnO+Q652Fw=";
     };
 
     extraPatches =
       let
-        url = "https://raw.githubusercontent.com/freebsd/freebsd-ports/b3f86656fc67aa397f60747c85f7f7b967c3279d/security/openssh-portable/files/extra-patch-hpn";
+        url = "https://raw.githubusercontent.com/freebsd/freebsd-ports/dde9561b3ff73639aeebe8ec33ad52ecca0bf58d/security/openssh-portable/files/extra-patch-hpn";
       in
       [
         ./ssh-keysign-8.5.patch
-        ./openssh-9.6_p1-CVE-2024-6387.patch
-        ./openssh-9.6_p1-chaff-logic.patch
 
         # HPN Patch from FreeBSD ports
         (fetchpatch {
@@ -51,17 +53,17 @@ in
           inherit url;
           stripLen = 1;
           excludes = [ "channels.c" ];
-          hash = "sha256-MydulQvz8sDVQ6Up9U1yrsiyI5EGmyKl/stUk7DvVOU=";
+          hash = "sha256-0HQAacNdvqX+7CTDhkbgAyb0WbqnnH6iAYQBFh8XenA=";
         })
 
-        (fetchpatch {
-          name = "ssh-hpn-channels.patch";
-          inherit url;
-          extraPrefix = "";
-          includes = [ "channels.c" ];
-          hash = "sha256-pDLUbjv5XIyByEbiRAXC3WMUPKmn15af1stVmcvr7fE=";
-        })
-      ];
+      (fetchpatch {
+        name = "ssh-hpn-channels.patch";
+        inherit url;
+        extraPrefix = "";
+        includes = [ "channels.c" ];
+        hash = "sha256-pDLUbjv5XIyByEbiRAXC3WMUPKmn15af1stVmcvr7fE=";
+      })
+    ];
 
     extraNativeBuildInputs = [ autoreconfHook ];
 
@@ -73,23 +75,21 @@ in
 
   openssh_gssapi = common rec {
     pname = "openssh-with-gssapi";
-    version = "9.7p1";
+    version = "10.0p2";
     extraDesc = " with GSSAPI support";
 
     src = fetchurl {
-      url = "mirror://openbsd/OpenSSH/portable/openssh-${version}.tar.gz";
-      hash = "sha256-SQQm92bYKidj/KzY2D6j1weYdQx70q/y5X3FZg93P/0=";
+      url = urlFor version;
+      hash = "sha256-AhoucJoO30JQsSVr1anlAEEakN3avqgw7VnO+Q652Fw=";
     };
 
     extraPatches = [
       ./ssh-keysign-8.5.patch
-      ./openssh-9.6_p1-CVE-2024-6387.patch
-      ./openssh-9.6_p1-chaff-logic.patch
 
       (fetchpatch {
         name = "openssh-gssapi.patch";
-        url = "https://salsa.debian.org/ssh-team/openssh/raw/debian/1%25${version}-3/debian/patches/gssapi.patch";
-        hash = "sha256-/lEbH5sIS+o+DStEDAghFy43nZlvcIXSFJrnvp+fDdY=";
+        url = "https://salsa.debian.org/ssh-team/openssh/raw/debian/1%25${version}-1/debian/patches/gssapi.patch";
+        hash = "sha256-7Q27tvtCY3b9evC3lbqEz4u7v5DcerjWZfhh8azIAQo=";
       })
     ];
 
