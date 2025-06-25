@@ -94,7 +94,7 @@ stdenv.mkDerivation {
     "--sbindir=\${out}/bin"
     "--localstatedir=/var"
     "--with-pid-dir=/run"
-    "--with-mantype=man"
+    "--with-mantype=doc"
     "--with-libedit=yes"
     "--disable-strip"
     (lib.withFeature withPAM "pam")
