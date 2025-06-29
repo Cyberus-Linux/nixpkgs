@@ -70,7 +70,7 @@ let
   inherit (release-lib) mapTestOn pkgs;
 
   inherit (release-lib.lib)
-    collect elem genAttrs hasInfix hasSuffix id isDerivation optionals;
+    collect elem genAttrs hasInfix hasSuffix id isDerivation optionals recursiveUpdate;
 
   inherit (release-lib.lib.attrsets) unionOfDisjoint;
 
@@ -91,10 +91,22 @@ let
       inherit pkgs nixpkgs supportedSystems;
     };
 
-    metrics = import ./metrics.nix { inherit pkgs nixpkgs; };
-
     manual = import ../../doc { inherit pkgs nixpkgs; };
-    lib-tests = import ../../lib/tests/release.nix { inherit pkgs; };
+    metrics = import ./metrics.nix { inherit pkgs nixpkgs; };
+    lib-tests = import ../../lib/tests/release.nix {
+      pkgs = import nixpkgs (
+        recursiveUpdate
+          (recursiveUpdate {
+            inherit system;
+            config.allowUnsupportedSystem = true;
+          } nixpkgsArgs)
+          {
+            config.permittedInsecurePackages = nixpkgsArgs.config.permittedInsecurePackages or [ ] ++ [
+              "nix-2.3.18"
+            ];
+          }
+      );
+    };
     pkgs-lib-tests = import ../pkgs-lib/tests { inherit pkgs; };
 
     darwin-tested = if supportDarwin.x86_64 then

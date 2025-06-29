@@ -165,6 +165,15 @@ in lib.makeExtensible (self: ({
       patch-monitorfdhup
     ];
     self_attribute_name = "nix_2_3";
+    knownVulnerabilities = [
+      "CVE-2024-38531"
+      "CVE-2024-47174"
+      "CVE-2025-46415"
+      "CVE-2025-46416"
+      "CVE-2025-52991"
+      "CVE-2025-52992"
+      "CVE-2025-52993"
+    ];
     maintainers = with lib.maintainers; [ flokli ];
   }).override { boehmgc = boehmgc-nix_2_3; }).overrideAttrs {
     # https://github.com/NixOS/nix/issues/10222

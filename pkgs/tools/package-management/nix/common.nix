@@ -5,6 +5,7 @@
 , hash ? null
 , src ? fetchFromGitHub { owner = "NixOS"; repo = "nix"; rev = version; inherit hash; }
 , patches ? [ ]
+, knownVulnerabilities ? []
 , maintainers ? with lib.maintainers; [ eelco lovesegfault artturin ]
 , self_attribute_name
 }@args:
@@ -297,11 +298,10 @@ self = stdenv.mkDerivation {
     '';
     homepage = "https://nixos.org/";
     license = licenses.lgpl21Plus;
-    inherit maintainers;
+    inherit knownVulnerabilities maintainers;
     platforms = platforms.unix;
     outputsToInstall = [ "out" ] ++ optional enableDocumentation "man";
     mainProgram = "nix";
-    knownVulnerabilities = lib.optional (!builtins.elem (lib.versions.majorMinor version) unaffectedByFodSandboxEscape && !atLeast221) "CVE-2024-27297";
   };
 };
 in self
