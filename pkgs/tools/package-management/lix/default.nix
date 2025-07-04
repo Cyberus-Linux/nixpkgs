@@ -20,6 +20,9 @@
   storeDir ? "/nix/store",
   stateDir ? "/nix/var",
   confDir ? "/etc",
+
+  # nixos-unstable backport compat
+  capnproto,
 }:
 let
   makeLixScope =
@@ -108,6 +111,18 @@ let
             nix = self.lix;
             inherit (self) nix-eval-jobs;
           };
+
+          # nixos-unstable backport compat
+          # See: https://github.com/NixOS/nixpkgs/commit/24ad909c6153a3752cc0ae62745ce1e41c1a9354
+          # NOTE: Does not include static building fixes.
+          capnproto = (capnproto.override({
+            #stdenv = lixStdenv;
+          })).overrideAttrs(_: {
+            env = {
+              # Required to build the coroutine library
+              CXXFLAGS = "-std=c++20";
+            };
+          });
         };
     };
 in
