@@ -110,10 +110,12 @@ let
             inherit (self) nix-eval-jobs;
           };
 
+          /* Not supported in ctrlos-24.05
           colmena = colmena.override {
             nix = self.lix;
             inherit (self) nix-eval-jobs;
           };
+          */
 
           # nixos-unstable backport compat
           # See: https://github.com/NixOS/nixpkgs/commit/24ad909c6153a3752cc0ae62745ce1e41c1a9354
