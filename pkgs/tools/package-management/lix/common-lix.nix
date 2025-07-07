@@ -93,6 +93,9 @@ assert lib.assertMsg (
   confDir,
   stateDir,
   storeDir,
+
+  # ctrlos-24.05 compat
+  ncurses
 }:
 let
   isLLVMOnly = lib.versionAtLeast version "2.92";
@@ -194,6 +197,7 @@ stdenv.mkDerivation (finalAttrs: {
       lowdown
       rapidcheck
       toml11
+      ncurses
     ]
     ++ lib.optionals hasExternalLixDoc [ lix-doc ]
     ++ lib.optionals (!isLegacyParser) [ pegtl ]

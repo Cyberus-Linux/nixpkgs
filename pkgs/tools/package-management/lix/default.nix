@@ -81,8 +81,10 @@ let
               };
 
           editline = editline.override {
+            /* Configured editline not supported in ctrlos-24.05
             inherit ncurses;
             enableTermcap = true;
+            */
           };
 
           # NOTE: The `common-*.nix` helpers contain a top-level function which
