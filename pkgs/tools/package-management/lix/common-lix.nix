@@ -364,7 +364,8 @@ stdenv.mkDerivation (finalAttrs: {
   '';
   hardeningDisable =
     [
-      "shadowstack"
+      # Not supported in ctrlos-24.05
+      # "shadowstack"
       # strictoverflow is disabled because we trap on signed overflow instead
       "strictoverflow"
     ]
