@@ -287,6 +287,13 @@ stdenv.mkDerivation (finalAttrs: {
       (lib.mesonOption "sandbox-shell" "${busybox-sandbox-shell}/bin/busybox")
     ];
 
+    # Needed for Meson to find Boost.
+    # https://github.com/NixOS/nixpkgs/issues/86131.
+    env = {
+      BOOST_INCLUDEDIR = "${lib.getDev boost}/include";
+      BOOST_LIBRARYDIR = "${lib.getLib boost}/lib";
+    };
+
   ninjaFlags = [ "-v" ];
 
   postInstall =
