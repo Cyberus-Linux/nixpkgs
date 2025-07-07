@@ -172,18 +172,6 @@ in lib.makeExtensible (self: ({
     enableParallelChecking = false;
   };
 
-  nix_2_18 = common {
-    version = "2.18.8";
-    hash = "sha256-0rHRifdjzzxMh/im8pRx6XoY62irDTDUes+Pn0CR65I=";
-    self_attribute_name = "nix_2_18";
-    patches = [
-      ./patches/2_18/0001-fix-Run-all-derivation-builders-inside-the-sandbox-o.patch
-      ./patches/2_18/0002-local-derivation-goal-Print-sandbox-error-detail-on-.patch
-      ./patches/2_18/0003-local-derivation-goal-Refactor.patch
-      ./patches/2_18/0004-local-derivation-goal-Move-builder-preparation-to-no.patch
-    ];
-  };
-
   nix_2_19 = common {
     version = "2.19.6";
     hash = "sha256-XT5xiwOLgXf+TdyOjbJVOl992wu9mBO25WXHoyli/Tk=";
