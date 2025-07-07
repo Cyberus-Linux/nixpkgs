@@ -23,6 +23,7 @@
 
   # nixos-unstable backport compat
   capnproto,
+  python312
 }:
 let
   makeLixScope =
@@ -123,6 +124,10 @@ let
               CXXFLAGS = "-std=c++20";
             };
           });
+
+          # nixos-unstable backport compat
+          # Lix 2.93+ uses very recent python semantics.
+          python3 = python312;
         };
     };
 in
