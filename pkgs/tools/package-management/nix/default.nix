@@ -266,35 +266,6 @@ in lib.makeExtensible (self: ({
     stdenv = overrideSDK stdenv { darwinMinVersion = "10.13"; };
   });
 
-  git = (common rec {
-    version = "2.25.0";
-    suffix = "pre20240920_${lib.substring 0 8 src.rev}";
-    src = fetchFromGitHub {
-      owner = "NixOS";
-      repo = "nix";
-      rev = "ca3fc1693b309ab6b8b0c09408a08d0055bf0363";
-      hash = "sha256-Hp7dkx7zfB9a4l5QusXUob0b1T2qdZ23LFo5dcp3xrU=";
-    };
-    patches = [
-      ./patches/git/0001-Fix-meson-build-on-darwin.patch
-      ./patches/git/0002-fix-Run-all-derivation-builders-inside-the-sandbox-o.patch
-      ./patches/git/0003-packaging-Add-darwin-lsandbox-in-meson.patch
-      ./patches/git/0004-local-derivation-goal-Print-sandbox-error-detail-on-.patch
-      ./patches/git/0005-local-derivation-goal-Refactor.patch
-      ./patches/git/0006-local-derivation-goal-Move-builder-preparation-to-no.patch
-    ];
-    self_attribute_name = "git";
-  }).override (lib.optionalAttrs (stdenv.isDarwin && stdenv.isx86_64) {
-    # Fix the following error with the default x86_64-darwin SDK:
-    #
-    #     error: aligned allocation function of type 'void *(std::size_t, std::align_val_t)' is only available on macOS 10.13 or newer
-    #
-    # Despite the use of the 10.13 deployment target here, the aligned
-    # allocation function Clang uses with this setting actually works
-    # all the way back to 10.6.
-    stdenv = overrideSDK stdenv { darwinMinVersion = "10.13"; };
-  });
-
   latest = self.nix_2_24;
 
   # The minimum Nix version supported by Nixpkgs
