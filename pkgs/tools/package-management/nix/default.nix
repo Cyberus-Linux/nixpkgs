@@ -176,13 +176,6 @@ in lib.makeExtensible (self: ({
     version = "2.24.10";
     hash = "sha256-XdeVy1/d6DEIYb3nOA6JIYF4fwMKNxtwJMgT3pHi+ko=";
     self_attribute_name = "nix_2_24";
-    patches = [
-      ./patches/2_24/0001-fix-Run-all-derivation-builders-inside-the-sandbox-o.patch
-      ./patches/2_24/0002-packaging-Add-darwin-lsandbox-in-meson.patch
-      ./patches/2_24/0003-local-derivation-goal-Print-sandbox-error-detail-on-.patch
-      ./patches/2_24/0004-local-derivation-goal-Refactor.patch
-      ./patches/2_24/0005-local-derivation-goal-Move-builder-preparation-to-no.patch
-    ];
   }).override (lib.optionalAttrs (stdenv.isDarwin && stdenv.isx86_64) {
     # Fix the following error with the default x86_64-darwin SDK:
     #
