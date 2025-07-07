@@ -122,6 +122,10 @@ let
           lowdown-unsandboxed = self.callPackage ({ lowdown }: lowdown) {};
 
           # nixos-unstable backport compat
+          # This needs to make `lib.meta.availableOn` fail.
+          systemtap-sdt = { meta = { platforms = []; }; };
+
+          # nixos-unstable backport compat
           # See: https://github.com/NixOS/nixpkgs/commit/24ad909c6153a3752cc0ae62745ce1e41c1a9354
           # NOTE: Does not include static building fixes.
           capnproto = (capnproto.override({
