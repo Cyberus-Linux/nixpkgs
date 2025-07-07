@@ -22,6 +22,7 @@
   confDir ? "/etc",
 
   # nixos-unstable backport compat
+  Security,
   capnproto,
   python312
 }:
