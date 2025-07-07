@@ -159,11 +159,11 @@ lib.makeExtensible (self: {
         hash = "sha256-f8k+BezKdJfmE+k7zgBJiohtS3VkkriycdXYsKOm3sc=";
       };
 
-      docCargoDeps = rustPlatform.fetchCargoVendor {
+      docCargoDeps = rustPlatform.fetchCargoTarball {
         name = "lix-doc-${version}";
         inherit src;
         sourceRoot = "${src.name or src}/lix-doc";
-        hash = "sha256-VPcrf78gfLlkTRrcbLkPgLOk0o6lsOJBm6HYLvavpNU=";
+        hash = "sha256-vSf9MyD2XzofZlbzsmh6NP69G+LiX72GX4Um9UJp3dc=";
       };
 
       knownVulnerabilities = [
@@ -195,11 +195,11 @@ lib.makeExtensible (self: {
         hash = "sha256-b5d+HnPcyHz0ZJW1+LZl4qm4LGTB/TiaDFQVlVL2xpE=";
       };
 
-      docCargoDeps = rustPlatform.fetchCargoVendor {
+      docCargoDeps = rustPlatform.fetchCargoTarball {
         name = "lix-doc-${version}";
         inherit src;
         sourceRoot = "${src.name or src}/lix-doc";
-        hash = "sha256-U820gvcbQIBaFr2OWPidfFIDXycDFGgXX1NpWDDqENs=";
+        hash = "sha256-0UHx3YLqtDKlGPnVkJATs/OQ1Yq2jMdIeL3CKFfxhaA=";
       };
     };
 
@@ -227,10 +227,10 @@ lib.makeExtensible (self: {
         hash = "sha256-iP2iUDxA99RcgQyZROs7bQw8pqxa1vFudRqjAIHg9Iw=";
       };
 
-      cargoDeps = rustPlatform.fetchCargoVendor {
+      cargoDeps = rustPlatform.fetchCargoTarball {
         name = "lix-${version}";
         inherit src;
-        hash = "sha256-YMyNOXdlx0I30SkcmdW/6DU0BYc3ZOa2FMJSKMkr7I8=";
+        hash = "sha256-jM4pGUp13M+3OOh6rAp4abcqcwtRoK6IwWPTDpyn3E4=";
       };
     };
 
@@ -258,10 +258,10 @@ lib.makeExtensible (self: {
         hash = "sha256-J4ycLoXHPsoBoQtEXFCelL4xlq5pT8U9tNWNKm43+YI=";
       };
 
-      cargoDeps = rustPlatform.fetchCargoVendor {
+      cargoDeps = rustPlatform.fetchCargoTarball {
         name = "lix-${version}";
         inherit src;
-        hash = "sha256-YMyNOXdlx0I30SkcmdW/6DU0BYc3ZOa2FMJSKMkr7I8=";
+        hash = "sha256-yZOAC4O391Ly/3u0M35ZAvnV+KSc6vjtvYyBsmIurlg=";
       };
     };
   };
