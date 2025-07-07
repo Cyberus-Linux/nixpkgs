@@ -13,4 +13,7 @@ rustPlatform.buildRustPackage {
     src
     cargoDeps
     ;
+
+  # nixos-unstable backport compat
+  cargoHash = cargoDeps.hash;
 }
