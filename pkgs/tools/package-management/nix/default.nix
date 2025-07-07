@@ -173,8 +173,8 @@ in lib.makeExtensible (self: ({
   };
 
   nix_2_24 = (common {
-    version = "2.24.14";
-    hash = "sha256-SthMCsj6POjawLnJq9+lj/UzObX9skaeN1UGmMZiwTY=";
+    version = "2.24.15";
+    hash = "sha256-GHqFHLxvRID2IEPUwIfRMp8epYQMFcvG9ogLzfWRbPc=";
     self_attribute_name = "nix_2_24";
   }).override (lib.optionalAttrs (stdenv.isDarwin && stdenv.isx86_64) {
     # Fix the following error with the default x86_64-darwin SDK:
