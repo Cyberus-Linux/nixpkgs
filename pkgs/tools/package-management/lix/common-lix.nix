@@ -229,6 +229,33 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   postPatch = ''
+    ${lib.optionalString(finalAttrs.cargoDeps != null) ''
+    (
+      printf ' => Synthesizing MESON_PACKAGE_CACHE_DIR compatible structure from fetchCargoTarball...\n'
+      make_versioned_dir_script() {
+        # Using the structured nature of the lockfile, we synthesize a fragment of script.
+        # The fragments call versioned_dir_for
+        grep -A1 'name =' "Cargo.lock" \
+          | sed -E -z -e 's/(--| )//g' -e 's/"\n/" /g' -e 's/[a-z]+=//g' \
+          | sed -e 's/^/versioned_dir_for /g'
+      }
+      versioned_dir_for() {
+        local name="$1"
+        local version="$2"
+        ln -s "$name" "$name-$version"
+      }
+
+      mkdir -p "meson_package_cache_dir"
+      cd "meson_package_cache_dir"
+      tar xf "$MESON_PACKAGE_CACHE_DIR"
+      mv -t . */*
+
+      eval "$(make_versioned_dir_script)"
+    )
+    # Exporting the new cache dir
+    export MESON_PACKAGE_CACHE_DIR="$PWD/meson_package_cache_dir"
+  ''}
+
     patchShebangs --build tests doc/manual
   '';
 
