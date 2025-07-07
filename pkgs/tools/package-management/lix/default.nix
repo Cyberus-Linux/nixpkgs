@@ -279,7 +279,8 @@ lib.makeExtensible (self: {
     let
       mkAlias =
         version:
-        lib.warnOnInstantiate "'lixVersions.${version}' has been renamed to 'lixPackageSets.${version}.lix'"
+        # Not accurate for CtrlOS 24.05
+        #lib.warnOnInstantiate "'lixVersions.${version}' has been renamed to 'lixPackageSets.${version}.lix'"
           self.${version}.lix;
     in
     lib.dontRecurseIntoAttrs {
