@@ -11,8 +11,18 @@ let
   messages = {
     # Generic messages
     unstableVersion = "No support for unstable package versions.";
+
+    # Ecosystem or package-specific messages
+    nixStable = "Nix 2.24 is the only currently supported Nix version.";
   };
 in
 # Keep sorted, use complete attribute paths.
 {
+  nixVersions.git = messages.unstableVersion;
+  nixVersions.nix_2_18 = messages.nixStable;
+  nixVersions.nix_2_19 = messages.nixStable;
+  nixVersions.nix_2_20 = messages.nixStable;
+  nixVersions.nix_2_21 = messages.nixStable;
+  nixVersions.nix_2_22 = messages.nixStable;
+  nixVersions.nix_2_23 = messages.nixStable;
 }
