@@ -5,6 +5,8 @@
 #
 # Keep usage to a minimum. When feasible, prefer upgrading the actual packages with Nixpkgs backports.
 #
+# For now, this is intended mainly to make `ctrlos/pkgs/unsupported.nix` work.
+#
 final: super:
 let
   inherit (super) lib;
@@ -30,6 +32,26 @@ let
     )
   ;
 
+  # The `unsupported.nix` must be *deeply merged* with the overlay.
+  unsupported =
+    lib.mapAttrsRecursive
+    (
+      name: value:
+      let
+        message =
+          "Package or dependency unsupported in CtrlOS.\n       The attribute ${escapeAttributePath name} is not supported in CtrlOS.${
+            lib.optionalString
+            (lib.isString value)
+            ("\n       Details: ${value}")
+          }"
+        ;
+      in
+        # Handle unsupported CtrlOS attributes.
+        builtins.throw message
+    )
+    (import ./unsupported.nix)
+  ;
+
   overlay =
     {
       # Canary value for quick checks.
@@ -42,6 +64,7 @@ let
   self =
     mergeOverlays [
       overlay
+      unsupported
     ]
   ;
 in
