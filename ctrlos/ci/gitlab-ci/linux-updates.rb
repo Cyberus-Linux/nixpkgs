@@ -68,7 +68,7 @@ if with_secret?()
   # Ensure remote is setup correctly.
   # (GitLab *can* re-use existing repos in some circumstances.)
   Git.ensure_remote(GIT_REMOTE, "https://gitlab-ci-token:#{SCHEDULED_TASKS_TOKEN}@#{CI_SERVER_HOST}/#{CI_PROJECT_PATH}.git")
-  Git.fetch(GIT_REMOTE)
+  Git.fetch(GIT_REMOTE, refetch: true)
 else
   if in_ci?()
     $stderr.puts "No secret, yet running in CI? Aborting!"
