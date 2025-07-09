@@ -18,10 +18,13 @@ module Git
   def branch_exists?(name, remote: nil)
     args = []
     if remote
-      args << "--remote"
-      name = [remote, name].join("/")
+      args << "--branches"
+      args << remote
+      args << ["refs/heads", name].join("/")
+      git("ls-remote", *args, get_stdout: true).strip() != ""
+    else
+      git("branch", *args, "--list", name, get_stdout: true).strip() != ""
     end
-    git("branch", *args, "--list", name, get_stdout: true).strip() != ""
   end
 
   def ensure_remote(name, url)
@@ -33,12 +36,33 @@ module Git
     git("remote", "add", name, url)
   end
 
-  def fetch(name, refetch: false)
+  def get_remote_commit(remote, branch: nil)
+    args = []
+    if branch
+      args << "--branches"
+      args << remote
+      args << ["refs/heads", branch].join("/")
+    else
+      # We may want to support non-branches at some point.
+      raise "branch needs to be given to `get_remote_commit`"
+    end
+    git("ls-remote", *args, get_stdout: true)
+      .split("\n", 2).first.split(/\s/, 2).first
+  end
+
+  def fetch(name, refetch: false, commit: nil)
     args = []
     if refetch
       args << "--refetch" if refetch
     end
-    git("fetch", *args, name)
+    if commit
+      args << "--depth=1"
+    end
+    args << name
+    if commit
+      args << commit
+    end
+    git("fetch", *args)
   end
 
   # Checkout `branch`, optionally creating a new one with the `name`.
