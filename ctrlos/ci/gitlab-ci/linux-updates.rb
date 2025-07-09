@@ -25,9 +25,6 @@ TARGET_BRANCH = ENV["CI_COMMIT_BRANCH"]
 # Use a standardized branch name.
 BRANCH_NAME = "scheduled/linux-kernels"
 
-# Fully qualified branch name
-REMOTE_BRANCH = [GIT_REMOTE, BRANCH_NAME].join("/")
-
 # Provided by GitLab in the environment.
 CI_SERVER_HOST = ENV["CI_SERVER_HOST"]
 CI_PROJECT_PATH = ENV["CI_PROJECT_PATH"]
@@ -68,7 +65,6 @@ if with_secret?()
   # Ensure remote is setup correctly.
   # (GitLab *can* re-use existing repos in some circumstances.)
   Git.ensure_remote(GIT_REMOTE, "https://gitlab-ci-token:#{SCHEDULED_TASKS_TOKEN}@#{CI_SERVER_HOST}/#{CI_PROJECT_PATH}.git")
-  Git.fetch(GIT_REMOTE, refetch: true)
 else
   if in_ci?()
     $stderr.puts "No secret, yet running in CI? Aborting!"
@@ -80,7 +76,9 @@ end
 
 if Git.branch_exists?(BRANCH_NAME, remote: GIT_REMOTE)
   # Re-use existing branch
-  Git.checkout(REMOTE_BRANCH, name: BRANCH_NAME)
+  commit = Git.get_remote_commit(GIT_REMOTE, branch: BRANCH_NAME)
+  Git.fetch(GIT_REMOTE, commit: commit)
+  Git.checkout(commit, name: BRANCH_NAME)
 else
   # Otherwise create from the current commit
   Git.checkout(name: BRANCH_NAME)
