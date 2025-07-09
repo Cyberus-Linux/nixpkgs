@@ -6,6 +6,10 @@ workflow:
   rules:
     # Merge requests
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    # Pipeline schedules
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+    # Manually triggered pipelines
+    - if: $CI_PIPELINE_SOURCE == 'web'
     # Additionally, always attempt on tags
     - if: $CI_COMMIT_TAG
     # And always attempt on main branch commit events (i.e. merge and push)
@@ -16,6 +20,7 @@ workflow:
 # Stages that are not used in a pipeline are not exposed.
 stages:
   - deploy
+  - scheduled
 
 # We include all of the CtrlOS independent gitlab-ci YAML files.
 include:

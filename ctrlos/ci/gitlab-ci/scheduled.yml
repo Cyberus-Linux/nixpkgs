@@ -1,0 +1,27 @@
+# Marks a job as being a daily-scheduled job.
+# A *daily* Pipeline schedule needs to be defined in the GitLab interface!
+# A `SCHEDULE_TYPE` variable must be set with the value `daily`.
+.scheduled:daily:
+  stage: scheduled
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "daily"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+# The command given in `scheduled_command` (using shell splitting semantics)
+# is ran after a configurable delay, from 0 to `delay_max` seconds.
+# This spreads scheduled events over a period randomly, helping prevent
+# the common problematic behaviour where scheduled scripts often run "on the hour" or similarly.
+# Prefer providing a single command, without parameters (e.g. a script path).
+# The delay will be skipped when manually trigged. (Via Pipelines → New pipeline in GitLab.)
+.scheduled:spread:
+  variables:
+    delay_max: 3600 # 60 * 60 = 1 hour
+  script: |
+    if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
+      # Prevent thundering herds effects by spreading when the update happens on scheduled events.
+      delay="$(( RANDOM * delay_max / 32767))"
+      printf "Sleeping for %d seconds...\n" "$delay"
+    fi
+    (PS4=" $ "; set -x;
+    ${scheduled_command}
+    )

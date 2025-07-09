@@ -1,0 +1,12 @@
+# Shared bits for GitLab CI jobs.
+
+# All jobs should eventually include `.base`.
+.base:
+  # Can't be blank, and we don't have any shared config yet.
+  tags: []
+
+# Any job that needs to run on build machines with `nix` available.
+.base:nix:
+  tags:
+    - nix
+
