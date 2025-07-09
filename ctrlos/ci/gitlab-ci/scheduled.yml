@@ -25,3 +25,17 @@
     (PS4=" $ "; set -x;
     ${scheduled_command}
     )
+
+
+# Regularly update the Linux packages.
+# A `SCHEDULED_TASKS_TOKEN` secret must be given to push changes and open merge requests.
+#   - Name: Must match the git author name: '[Automatic Updates]'
+#   - Role: developer
+#   - Scopes: api, read_api, read_repository, write_repository.
+scheduled_linux_updates:
+  extends:
+    - .base:nix
+    - .scheduled:daily
+    - .scheduled:spread
+  variables:
+    scheduled_command: ./ctrlos/ci/gitlab-ci/linux-updates.rb
