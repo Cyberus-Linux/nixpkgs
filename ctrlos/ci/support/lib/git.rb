@@ -33,8 +33,12 @@ module Git
     git("remote", "add", name, url)
   end
 
-  def fetch(name)
-    git("fetch", name)
+  def fetch(name, refetch: false)
+    args = []
+    if refetch
+      args << "--refetch" if refetch
+    end
+    git("fetch", *args, name)
   end
 
   # Checkout `branch`, optionally creating a new one with the `name`.
