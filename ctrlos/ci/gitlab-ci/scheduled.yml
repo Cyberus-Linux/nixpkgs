@@ -38,4 +38,7 @@ scheduled_linux_updates:
     - .scheduled:daily
     - .scheduled:spread
   variables:
+    # Always start from a clean repo...
+    # https://docs.gitlab.com/ci/runners/configure_runners/#git-strategy
+    GIT_STRATEGY: clone
     scheduled_command: ./ctrlos/ci/gitlab-ci/linux-updates.rb
