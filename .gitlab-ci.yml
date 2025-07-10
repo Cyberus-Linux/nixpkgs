@@ -1,29 +1,27 @@
 workflow:
+  # Any of the rule must match to attempt to create a pipeline.
+  # So list any additional relevant CI_PIPELINE_SOURCE as needed.
+  #   - https://docs.gitlab.com/ci/jobs/job_rules/#ci_pipeline_source-predefined-variable
+  # Jobs should additionally define `rules` as needed, or `extend` from templates that define rules.
   rules:
+    # Merge requests
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    # Pipeline schedules
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+    # Manually triggered pipelines
+    - if: $CI_PIPELINE_SOURCE == 'web'
+    # Additionally, always attempt on tags
     - if: $CI_COMMIT_TAG
+    # And always attempt on main branch commit events (i.e. merge and push)
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
+# Stages define “buckets” that run in order, in which jobs can run in parallel.
+# Usage of stages can help define dependencies and ordering between jobs, but using the `needs` keyword is preferred instead.
+# Stages that are not used in a pipeline are not exposed.
 stages:
   - deploy
+  - scheduled
 
-update_channel:
-  stage: deploy
-  variables:
-    AWS_ACCESS_KEY_ID: "$CTRLOS_CHANNEL_AWS_ACCESS_KEY_ID"
-    AWS_SECRET_ACCESS_KEY: "$CTRLOS_CHANNEL_AWS_SECRET_ACCESS_KEY"
-    AWS_REGION: "$CTRLOS_CHANNEL_AWS_REGION"
-    AWS_ENDPOINT_URL: "$CTRLOS_CHANNEL_AWS_ENDPOINT_URL"
-  script:
-    - mkdir -p tarball/
-    - nix shell nixpkgs#{gitMinimal,xz} --command sh -c
-      'git archive --format=tar --prefix=ctrlos-$(git rev-parse HEAD)/ HEAD | xz -v -9 > tarball/ctrlos-$(git rev-parse HEAD).tar.xz'
-    - nix shell github:cyberus-technology/s3-nix-channel --command sh -c
-      "s3-nix-channel-upload publish $CTRLOS_CHANNEL_BUCKET ctrlos-24.05 tarball/*"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "ctrlos-24.05"'
-  artifacts:
-    paths:
-      - tarball/
-  tags:
-    - nix
+# We include all of the CtrlOS independent gitlab-ci YAML files.
+include:
+  - local: "ctrlos/ci/gitlab-ci/*.yml"
