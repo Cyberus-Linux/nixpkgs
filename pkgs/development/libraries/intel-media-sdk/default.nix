@@ -63,6 +63,16 @@ stdenv.mkDerivation rec {
     mainProgram = "mfx-tracer-config";
     license = licenses.mit;
     maintainers = with maintainers; [ midchildan ];
+    knownVulnerabilities = [
+      ''
+        End of life with various local privilege escalation vulnerabilites:
+          - CVE-2023-22656
+          - CVE-2023-45221
+          - CVE-2023-47169
+          - CVE-2023-47282
+          - CVE-2023-48368
+      ''
+    ];
     platforms = [ "x86_64-linux" ];
   };
 }
