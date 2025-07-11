@@ -301,6 +301,17 @@ let
     };
   };
 
+  ctrlos-overlay =
+    let path = ../../ctrlos/pkgs/overlay.nix; in
+    # This is a workaround for the `pkgs/top-level/release-attrpaths-superset.nix` expression,
+    # used in `pkgs/test/release/default.nix` are only bringing in the `pkgs` folder from Nixpkgs.
+    # This can be revisited later if the `packages.json` generated for the tarball needs
+    # to include attributes coming from the CtrlOS overlay.
+    if builtins.pathExists path
+    then import path
+    else builtins.trace "CtrlOS overlay unavailable. This is fine when running Nixpkgs internal tests." (_: _: {})
+  ;
+
   # The complete chain of package set builders, applied from top to bottom.
   # stdenvOverlays must be last as it brings package forward from the
   # previous bootstrapping phases which have already been overlayed.
@@ -313,6 +324,7 @@ let
     allPackages
     otherPackageSets
     aliases
+    ctrlos-overlay
     configOverrides
   ] ++ overlays ++ [
     stdenvOverrides ]);
