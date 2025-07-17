@@ -7,6 +7,7 @@
   autoreconfHook,
   bzip2,
   e2fsprogs,
+  fetchpatch,
   glibcLocalesUtf8,
   lzo,
   openssl,
@@ -30,14 +31,22 @@
 assert xarSupport -> libxml2 != null;
 stdenv.mkDerivation (finalAttrs: {
   pname = "libarchive";
-  version = "3.7.7";
+  version = "3.7.9";
 
   src = fetchFromGitHub {
     owner = "libarchive";
     repo = "libarchive";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-maV2+Whi4aDG1VLAYpOTxluO9I0zNiZ8fA3w7epGlDg=";
+    hash = "sha256-N1PzkkM6k35GuteKijsJZw5Og0DiM70VihN6qlLqGfU=";
   };
+
+  patches = [
+    (fetchpatch {
+      name = "CVE-2025-5914";
+      url = "https://github.com/libarchive/libarchive/commit/196029dd0a17cd17c916eada9085839032b76ec9.patch";
+      hash = "sha256-nTJlDyuh4CvMWqlBo3kOMDxeKcu2DzHb7uc2Rq+uLK8=";
+    })
+  ];
 
   outputs = [
     "out"
