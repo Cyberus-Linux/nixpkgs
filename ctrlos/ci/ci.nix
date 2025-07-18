@@ -67,5 +67,11 @@ nixos.release-small
       # Serves as a canary for this release jobset.
       inherit (pkgs) hello;
     };
+    # We need to be aware of those extra packages.
+    lix = {
+      lix_2_91 = pkgs.lixVersions.lix_2_91.lix;
+      lix_2_92 = pkgs.lixVersions.lix_2_92.lix;
+      lix_2_93 = pkgs.lixVersions.lix_2_93.lix;
+    };
   };
 }

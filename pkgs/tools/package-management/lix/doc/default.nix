@@ -2,8 +2,7 @@
   src,
   rustPlatform,
   version,
-  cargoHash ? null,
-  cargoLock ? null,
+  cargoDeps,
 }:
 
 rustPlatform.buildRustPackage {
@@ -12,7 +11,9 @@ rustPlatform.buildRustPackage {
   inherit
     version
     src
-    cargoHash
-    cargoLock
+    cargoDeps
     ;
+
+  # nixos-unstable backport compat
+  cargoHash = cargoDeps.hash;
 }
