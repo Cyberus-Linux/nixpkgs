@@ -143,6 +143,7 @@ else
     title: title,
     description: description,
     allow_collaboration: true,
+    remove_source_branch: true,
   }
   pp GitLab.create_merge_request(merge_request)
 end
