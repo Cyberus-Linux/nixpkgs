@@ -124,6 +124,14 @@ stdenv.mkDerivation (finalAttrs: {
     # 3. Tools for desktop environment that cannot go to $bin due to $out depending on them ($out)
     #    * gio-launch-desktop
     ./split-dev-programs.patch
+
+    # gsocks4aproxy: Fix a single byte buffer overflow in connect messages
+    # (CVE-2024-52533)
+    (fetchpatch {
+      name = "CVE-2024-52533.patch";
+      url = "https://gitlab.gnome.org/GNOME/glib/-/commit/ec0b708b981af77fef8e4bbb603cde4de4cd2e29.patch";
+      hash = "sha256-2W8UcqhTWGpJWH8Z/JCn9g0fbPXY8O7XTGd4TSUGwgM=";
+    })
   ];
 
   outputs = [ "bin" "out" "dev" "devdoc" ];
