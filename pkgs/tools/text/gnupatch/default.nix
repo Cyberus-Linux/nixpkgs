@@ -36,6 +36,9 @@ stdenv.mkDerivation rec {
 
     # https://git.savannah.gnu.org/cgit/patch.git/patch/?id=3fcd042d26d70856e826a42b5f93dc4854d80bf0
     ./CVE-2019-13638-and-CVE-2018-20969.patch
+
+    # https://git.savannah.gnu.org/cgit/patch.git/patch/?id=15b158db3ae11cb835f2eb8d2eb48e09d1a4af48
+    ./CVE-2019-20633.patch
   ];
 
   nativeBuildInputs = [ autoreconfHook ];
