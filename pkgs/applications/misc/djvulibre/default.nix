@@ -38,6 +38,10 @@ stdenv.mkDerivation rec {
 
   enableParallelBuilding = true;
 
+  patches = [
+    ./backport-3.5.29-CVE-2021-46312.patch
+  ];
+
   meta = with lib; {
     description = "The big set of CLI tools to make/modify/optimize/show/export DJVU files";
     homepage = "https://djvu.sourceforge.net";
