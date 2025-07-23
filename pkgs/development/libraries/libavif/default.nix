@@ -30,6 +30,11 @@ stdenv.mkDerivation rec {
     hash = "sha256-9YP4Zq6dehIJanNkpAJK1aYwSOAueqonF8k2t/3B4kw=";
   };
 
+  patches = [
+    ./backport-1.0.4-CVE-2025-48174.patch
+    ./backport-1.0.4-CVE-2025-48175.patch
+  ];
+
   # reco: encode libaom slowest but best, decode dav1d fastest
 
   cmakeFlags = [
