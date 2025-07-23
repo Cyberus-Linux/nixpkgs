@@ -396,6 +396,10 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   patches = []
+    ++ optionals (lib.versionAtLeast version "4" && lib.versionOlder version "5") [
+      # Applies just fine on 4.4
+      ./5.1-CVE-2025-1594.patch
+    ]
     ++ optionals (lib.versionAtLeast version "5" && lib.versionOlder version "6") [
       (fetchpatch2 {
         name = "CVE-2024-31582.patch";
@@ -413,6 +417,7 @@ stdenv.mkDerivation (finalAttrs: {
         url = "https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/5f87a68cf70dafeab2fb89b42e41a4c29053b89b";
         hash = "sha256-sqUUSOPTPLwu2h8GbAw4SfEf+0oWioz52BcpW1n4v3Y=";
       })
+      ./5.1-CVE-2025-1594.patch
     ]
     ++ optionals (lib.versionAtLeast version "6.1" && lib.versionOlder version "6.2") [
       (fetchpatch2 { # this can be removed post 6.1
@@ -450,6 +455,8 @@ stdenv.mkDerivation (finalAttrs: {
         url = "https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/5f87a68cf70dafeab2fb89b42e41a4c29053b89b";
         hash = "sha256-sqUUSOPTPLwu2h8GbAw4SfEf+0oWioz52BcpW1n4v3Y=";
       })
+      # Applies just fine on 6.1
+      ./5.1-CVE-2025-1594.patch
     ]
     ++ optionals (lib.versionAtLeast version "7.1" && lib.versionOlder version "7.2") [
       (fetchpatch2 {
