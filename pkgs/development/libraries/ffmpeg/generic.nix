@@ -451,12 +451,11 @@ stdenv.mkDerivation (finalAttrs: {
         hash = "sha256-sqUUSOPTPLwu2h8GbAw4SfEf+0oWioz52BcpW1n4v3Y=";
       })
     ]
-    ++ optionals (lib.versionAtLeast version "7.0" && lib.versionOlder version "7.0.1") [
+    ++ optionals (lib.versionAtLeast version "7.1" && lib.versionOlder version "7.2") [
       (fetchpatch2 {
-        # Will likely be obsolete in >7.0
-        name = "fate_avoid_dependency_on_samples";
-        url = "https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/7b7b7819bd21cc92ac07f6696b0e7f26fa8f9834";
-        hash = "sha256-TKI289XqtG86Sj9s7mVYvmkjAuRXeK+2cYYEDkg6u6I=";
+        name = "ffmpeg-7.1-CVE-2025-1594.patch";
+        url = "https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/c2184b65d214d60f2d3df86a11ca502567a3d134";
+        hash = "sha256-/GFHXZxixdT2yzKCvDrXByamsald0pwxKEBKSV/l/gI=";
       })
     ];
 
