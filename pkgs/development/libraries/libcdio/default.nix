@@ -35,6 +35,9 @@ stdenv.mkDerivation rec {
       url = "https://savannah.gnu.org/patch/download.php?file_id=52179";
       sha256 = "1v15gxhpi4bgcr12pb3d9c3hiwj0drvc832vic7sham34lhjmcbb";
     })
+
+    # https://salsa.debian.org/debian/libcdio/-/tree/bdbf9afd1ac7c22c1ef356ed904790afc1199976/debian/patches
+    ./CVE-2024-36600.patch
   ];
 
   postPatch = ''
