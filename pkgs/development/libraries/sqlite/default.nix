@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchurl, zlib, readline, ncurses
+{ lib, stdenv, fetchurl, zlib, readline, ncurses, unzip
 
 # for tests
 , python3Packages, sqldiff, sqlite-analyzer, tracker
@@ -15,26 +15,49 @@ in
 
 stdenv.mkDerivation rec {
   pname = "sqlite${lib.optionalString interactive "-interactive"}";
-  version = "3.45.3";
+  version = "3.50.3";
 
   # nixpkgs-update: no auto update
   # NB! Make sure to update ./tools.nix src (in the same directory).
   src = fetchurl {
-    url = "https://sqlite.org/2024/sqlite-autoconf-${archiveVersion version}.tar.gz";
-    hash = "sha256-soCcpTEkwZxg9Cv2J3NurgEa/cwgW7SCcKXumjgZFTE=";
+    url = "https://sqlite.org/2025/sqlite-autoconf-${archiveVersion version}.tar.gz";
+    hash = "sha256-7FSWzf+8KkrbWTF/0r8OWCvw5qzY9Krn6XvHI926cjM=";
+  };
+  docsrc = fetchurl {
+    url = "https://sqlite.org/2025/sqlite-doc-${archiveVersion version}.zip";
+    sha256 = "sha256-vb1OR9UsZMeswzLRKUqmetYlHvNwq+sLCG7gy+yRGG0=";
   };
 
-  outputs = [ "bin" "dev" "out" ];
+
+  outputs = [ "bin" "dev" "man" "doc" "out" ];
   separateDebugInfo = stdenv.isLinux;
 
   buildInputs = [ zlib ] ++ lib.optionals interactive [ readline ncurses ];
+
+  nativeBuildInputs = [
+    unzip
+  ];
 
   # required for aarch64 but applied for all arches for simplicity
   preConfigure = ''
     patchShebangs configure
   '';
 
-  configureFlags = [ "--enable-threadsafe" ] ++ lib.optional interactive "--enable-readline";
+  # sqlite relies on autosetup now; so many of the
+  # previously-understood flags are gone. They should instead be set
+  # on a per-output basis.
+  # (See: pkgs/build-support/setup-hooks/multiple-outputs.sh)
+  setOutputFlags = false;
+
+  configureFlags =
+    [
+      "--enable-threadsafe"
+      "--bindir=${placeholder "bin"}/bin"
+      "--includedir=${placeholder "dev"}/include"
+      "--libdir=${placeholder "out"}/lib"
+    ]
+    ++ lib.optional (!interactive) "--disable-readline"
+    ++ lib.optional (stdenv.hostPlatform.isStatic) "--disable-shared";
 
   env.NIX_CFLAGS_COMPILE = toString ([
     "-DSQLITE_ENABLE_COLUMN_METADATA"
@@ -70,7 +93,7 @@ stdenv.mkDerivation rec {
     fi
 
     # Necessary for FTS5 on Linux
-    export NIX_LDFLAGS="$NIX_LDFLAGS -lm"
+    export NIX_CFLAGS_LINK="$NIX_CFLAGS_LINK -lm"
 
     echo ""
     echo "NIX_CFLAGS_COMPILE = $NIX_CFLAGS_COMPILE"
@@ -78,8 +101,9 @@ stdenv.mkDerivation rec {
   '';
 
   postInstall = ''
-    # Do not contaminate dependent libtool-based projects with sqlite dependencies.
-    sed -i $out/lib/libsqlite3.la -e "s/dependency_libs=.*/dependency_libs='''/"
+    mkdir -p $doc/share/doc
+    unzip $docsrc
+    mv sqlite-doc-${archiveVersion version} $doc/share/doc/sqlite
   '';
 
   doCheck = false; # fails to link against tcl
