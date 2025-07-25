@@ -17,7 +17,6 @@
 # When adding a kernel:
   # - Update packageAliases.linux_latest to the latest version
   # - Update the rev in ../os-specific/linux/kernel/linux-libre.nix to the latest one.
-  # - Update linux_latest_hardened when the patches become available
 
 with linuxKernel;
 
@@ -184,22 +183,6 @@ in {
        then latest
        else testing;
 
-    linux_hardened = hardenedKernelFor packageAliases.linux_default.kernel { };
-
-    linux_4_19_hardened = hardenedKernelFor kernels.linux_4_19 {
-      stdenv = gcc10Stdenv;
-      buildPackages = buildPackages // { stdenv = buildPackages.gcc10Stdenv; };
-    };
-    linux_5_4_hardened = markBroken (hardenedKernelFor kernels.linux_5_4 {
-      stdenv = gcc10Stdenv;
-      buildPackages = buildPackages // { stdenv = buildPackages.gcc10Stdenv; };
-    });
-    linux_5_10_hardened = hardenedKernelFor kernels.linux_5_10 { };
-    linux_5_15_hardened = hardenedKernelFor kernels.linux_5_15 { };
-    linux_6_1_hardened = hardenedKernelFor kernels.linux_6_1 { };
-    linux_6_6_hardened = hardenedKernelFor kernels.linux_6_6 { };
-    linux_6_11_hardened = hardenedKernelFor kernels.linux_6_11 { };
-
   } // lib.optionalAttrs config.allowAliases {
     linux_4_9 = throw "linux 4.9 was removed because it will reach its end of life within 22.11";
     linux_4_14 = throw "linux 4.14 was removed because it will reach its end of life within 23.11";
@@ -223,7 +206,8 @@ in {
     linux_6_7_hardened = throw "linux 6.7 was removed because it has reached its end of life upstream";
     linux_6_8_hardened = throw "linux 6.8 was removed because it has reached its end of life upstream";
     linux_6_9_hardened = throw "linux 6.9 was removed because it has reached its end of life upstream";
-    linux_6_10_hardened = throw "linux 6.9 was removed because it has reached its end of life upstream";
+    linux_6_10_hardened = throw "linux 6.10 was removed because it has reached its end of life upstream";
+    linux_6_11_hardened = throw "linux 6.11 was removed because it has reached its end of life upstream";
   }));
   /*  Linux kernel modules are inherently tied to a specific kernel.  So
     rather than provide specific instances of those packages for a
@@ -586,16 +570,6 @@ in {
     # Intentionally lacks recurseIntoAttrs, as -rc kernels will quite likely break out-of-tree modules and cause failed Hydra builds.
     linux_testing = packagesFor kernels.linux_testing;
 
-    linux_hardened = recurseIntoAttrs (packagesFor kernels.linux_hardened);
-
-    linux_4_19_hardened = recurseIntoAttrs (packagesFor kernels.linux_4_19_hardened);
-    linux_5_4_hardened = recurseIntoAttrs (packagesFor kernels.linux_5_4_hardened);
-    linux_5_10_hardened = recurseIntoAttrs (packagesFor kernels.linux_5_10_hardened);
-    linux_5_15_hardened = recurseIntoAttrs (packagesFor kernels.linux_5_15_hardened);
-    linux_6_1_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_1_hardened);
-    linux_6_6_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_6_hardened);
-    linux_6_11_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_11_hardened);
-
     __recurseIntoDerivationForReleaseJobs = true;
   } // lib.optionalAttrs config.allowAliases {
     linux_5_18_hardened = throw "linux 5.18 was removed because it has reached its end of life upstream";
@@ -611,6 +585,14 @@ in {
     linux_rpi2 = throw "linux_rpi2 has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_rpi3 = throw "linux_rpi3 has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_rpi4 = throw "linux_rpi4 has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_4_19_hardened = throw "linux_4_19_hardened has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_5_4_hardened = throw "linux_5_4_hardened has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_5_10_hardened = throw "linux_5_10_hardened has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_5_15_hardened = throw "linux_5_15_hardened has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_6_1_hardened = throw "linux_6_1_hardened has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_6_6_hardened = throw "linux_6_6_hardened has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_6_11_hardened = throw "linux_6_11_hardened has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_hardened = builtins.throw "linux_hardened has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_zen = throw "linux_zen has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_lqx = throw "linux_lqx has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_xanmod = throw "linux_xanmod has been removed due to lack of support"; # CTRL-OS 2025-07-25
