@@ -68,38 +68,6 @@ in {
     # New vendor kernels should go to nixos-hardware instead.
     # e.g. https://github.com/NixOS/nixos-hardware/tree/master/microsoft/surface/kernel
 
-    linux_rpi1 = callPackage ../os-specific/linux/kernel/linux-rpi.nix {
-      kernelPatches = with kernelPatches; [
-        bridge_stp_helper
-        request_key_helper
-      ];
-      rpiVersion = 1;
-    };
-
-    linux_rpi2 = callPackage ../os-specific/linux/kernel/linux-rpi.nix {
-      kernelPatches = with kernelPatches; [
-        bridge_stp_helper
-        request_key_helper
-      ];
-      rpiVersion = 2;
-    };
-
-    linux_rpi3 = callPackage ../os-specific/linux/kernel/linux-rpi.nix {
-      kernelPatches = with kernelPatches; [
-        bridge_stp_helper
-        request_key_helper
-      ];
-      rpiVersion = 3;
-    };
-
-    linux_rpi4 = callPackage ../os-specific/linux/kernel/linux-rpi.nix {
-      kernelPatches = with kernelPatches; [
-        bridge_stp_helper
-        request_key_helper
-      ];
-      rpiVersion = 4;
-    };
-
     linux_4_19 = callPackage ../os-specific/linux/kernel/mainline.nix {
       branch = "4.19";
       kernelPatches =
@@ -651,15 +619,7 @@ in {
      __attrsFailEvaluation = true;
   };
 
-  rpiPackages = {
-    linux_rpi1 = packagesFor kernels.linux_rpi1;
-    linux_rpi2 = packagesFor kernels.linux_rpi2;
-    linux_rpi3 = packagesFor kernels.linux_rpi3;
-    linux_rpi4 = packagesFor kernels.linux_rpi4;
-     __attrsFailEvaluation = true;
-  };
-
-  packages = recurseIntoAttrs (vanillaPackages // rtPackages // rpiPackages // {
+  packages = recurseIntoAttrs (vanillaPackages // rtPackages // {
 
     # Intentionally lacks recurseIntoAttrs, as -rc kernels will quite likely break out-of-tree modules and cause failed Hydra builds.
     linux_testing = packagesFor kernels.linux_testing;
@@ -692,6 +652,12 @@ in {
     linux_6_8_hardened = throw "linux 6.8 was removed because it has reached its end of life upstream";
     linux_6_9_hardened = throw "linux 6.9 was removed because it has reached its end of life upstream";
     linux_xanmod_tt = throw "linux_xanmod_tt was removed because upstream no longer offers this option";
+
+    # Only mainline Linux is supported in CTRL-OS.
+    linux_rpi1 = throw "linux_rpi1 has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_rpi2 = throw "linux_rpi2 has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_rpi3 = throw "linux_rpi3 has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_rpi4 = throw "linux_rpi4 has been removed due to lack of support"; # CTRL-OS 2025-07-25
   });
 
   packageAliases = {
