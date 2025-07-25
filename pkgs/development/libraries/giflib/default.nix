@@ -19,6 +19,13 @@ stdenv.mkDerivation rec {
   patches =
     [
       ./CVE-2021-40633.patch
+
+      (fetchpatch {
+        # Context: https://sourceforge.net/p/giflib/bugs/167/#c0db
+        name = "CVE-2024-45993";
+        url = "https://raw.githubusercontent.com/OpenMandrivaAssociation/giflib/refs/heads/master/giflib-5.2.2-cve-2025-31344.patch";
+        hash = "sha256-ATSodZIE10Wk76ONz2eVuvqm6ZweG4jLgUP0K/K/9HY=";
+      })
     ]
     ++ lib.optionals stdenv.hostPlatform.isMinGW [
       # Build dll libraries.
