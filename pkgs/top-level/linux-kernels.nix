@@ -188,36 +188,6 @@ in {
        then latest
        else testing;
 
-    # Using zenKernels like this due lqx&zen came from one source, but may have different base kernel version
-    # https://github.com/NixOS/nixpkgs/pull/161773#discussion_r820134708
-    zenKernels = callPackage ../os-specific/linux/kernel/zen-kernels.nix;
-
-    linux_zen = (zenKernels {
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-      ];
-    }).zen;
-
-    linux_lqx = (zenKernels {
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-      ];
-    }).lqx;
-
-    # This contains the variants of the XanMod kernel
-    xanmodKernels = callPackage ../os-specific/linux/kernel/xanmod-kernels.nix {
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-      ];
-    };
-
-    linux_xanmod = xanmodKernels.lts;
-    linux_xanmod_stable = xanmodKernels.main;
-    linux_xanmod_latest = xanmodKernels.main;
-
     linux_libre = deblobKernel packageAliases.linux_default.kernel;
 
     linux_latest_libre = deblobKernel packageAliases.linux_latest.kernel;
@@ -634,12 +604,6 @@ in {
     linux_6_6_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_6_hardened);
     linux_6_11_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_11_hardened);
 
-    linux_zen = recurseIntoAttrs (packagesFor kernels.linux_zen);
-    linux_lqx = recurseIntoAttrs (packagesFor kernels.linux_lqx);
-    linux_xanmod = recurseIntoAttrs (packagesFor kernels.linux_xanmod);
-    linux_xanmod_stable = recurseIntoAttrs (packagesFor kernels.linux_xanmod_stable);
-    linux_xanmod_latest = recurseIntoAttrs (packagesFor kernels.linux_xanmod_latest);
-
     linux_libre = recurseIntoAttrs (packagesFor kernels.linux_libre);
 
     linux_latest_libre = recurseIntoAttrs (packagesFor kernels.linux_latest_libre);
@@ -658,6 +622,11 @@ in {
     linux_rpi2 = throw "linux_rpi2 has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_rpi3 = throw "linux_rpi3 has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_rpi4 = throw "linux_rpi4 has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_zen = throw "linux_zen has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_lqx = throw "linux_lqx has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_xanmod = throw "linux_xanmod has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_xanmod_stable = throw "linux_xanmod_stable has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_xanmod_latest = throw "linux_xanmod_latest has been removed due to lack of support"; # CTRL-OS 2025-07-25
   });
 
   packageAliases = {
