@@ -109,6 +109,8 @@ let
   commonStructuredConfig = import ./common-config.nix {
     inherit lib stdenv version;
 
+    # Currently not enabling Rust by default, as upstream requires rustc 1.81
+    rustAvailable = false;
     features = kernelFeatures; # Ensure we know of all extra patches, etc.
   };
 
