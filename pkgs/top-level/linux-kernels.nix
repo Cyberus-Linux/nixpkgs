@@ -22,10 +22,6 @@
 with linuxKernel;
 
 let
-  deblobKernel = kernel: callPackage ../os-specific/linux/kernel/linux-libre.nix {
-    linux = kernel;
-  };
-
   markBroken = drv: drv.overrideAttrs ({ meta ? {}, ... }: {
     meta = meta // { broken = true; };
   });
@@ -187,10 +183,6 @@ in {
     in if latest.kernelAtLeast testing.baseVersion
        then latest
        else testing;
-
-    linux_libre = deblobKernel packageAliases.linux_default.kernel;
-
-    linux_latest_libre = deblobKernel packageAliases.linux_latest.kernel;
 
     linux_hardened = hardenedKernelFor packageAliases.linux_default.kernel { };
 
@@ -604,9 +596,6 @@ in {
     linux_6_6_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_6_hardened);
     linux_6_11_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_11_hardened);
 
-    linux_libre = recurseIntoAttrs (packagesFor kernels.linux_libre);
-
-    linux_latest_libre = recurseIntoAttrs (packagesFor kernels.linux_latest_libre);
     __recurseIntoDerivationForReleaseJobs = true;
   } // lib.optionalAttrs config.allowAliases {
     linux_5_18_hardened = throw "linux 5.18 was removed because it has reached its end of life upstream";
@@ -627,6 +616,8 @@ in {
     linux_xanmod = throw "linux_xanmod has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_xanmod_stable = throw "linux_xanmod_stable has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_xanmod_latest = throw "linux_xanmod_latest has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_libre = builtins.throw "linux_libre has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_latest_libre = builtins.throw "linux_latest_libre has been removed due to lack of support"; # CTRL-OS 2025-07-25
   });
 
   packageAliases = {
