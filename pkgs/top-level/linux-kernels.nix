@@ -81,26 +81,11 @@ in {
       ];
     };
 
-    linux_rt_5_4 = callPackage ../os-specific/linux/kernel/linux-rt-5.4.nix {
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-      ];
-    };
-
     linux_5_10 = callPackage ../os-specific/linux/kernel/mainline.nix {
       branch = "5.10";
       kernelPatches = [
         kernelPatches.bridge_stp_helper
         kernelPatches.request_key_helper
-      ];
-    };
-
-    linux_rt_5_10 = callPackage ../os-specific/linux/kernel/linux-rt-5.10.nix {
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-        kernelPatches.export-rt-sched-migrate
       ];
     };
 
@@ -112,14 +97,6 @@ in {
       ];
     };
 
-    linux_rt_5_15 = callPackage ../os-specific/linux/kernel/linux-rt-5.15.nix {
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-        kernelPatches.export-rt-sched-migrate
-      ];
-    };
-
     linux_6_1 = callPackage ../os-specific/linux/kernel/mainline.nix {
       branch = "6.1";
       kernelPatches = [
@@ -128,27 +105,11 @@ in {
       ];
     };
 
-    linux_rt_6_1 = callPackage ../os-specific/linux/kernel/linux-rt-6.1.nix {
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-        kernelPatches.export-rt-sched-migrate
-      ];
-    };
-
     linux_6_6 = callPackage ../os-specific/linux/kernel/mainline.nix {
       branch = "6.6";
       kernelPatches = [
         kernelPatches.bridge_stp_helper
         kernelPatches.request_key_helper
-      ];
-    };
-
-    linux_rt_6_6 = callPackage ../os-specific/linux/kernel/linux-rt-6.6.nix {
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-        kernelPatches.export-rt-sched-migrate
       ];
     };
 
@@ -555,17 +516,7 @@ in {
     linux_6_10 = throw "linux 6.10 was removed because it reached its end of life upstream"; # Added 2024-10-23
   };
 
-  rtPackages = {
-     # realtime kernel packages
-     linux_rt_5_4 = packagesFor kernels.linux_rt_5_4;
-     linux_rt_5_10 = packagesFor kernels.linux_rt_5_10;
-     linux_rt_5_15 = packagesFor kernels.linux_rt_5_15;
-     linux_rt_6_1 = packagesFor kernels.linux_rt_6_1;
-     linux_rt_6_6 = packagesFor kernels.linux_rt_6_6;
-     __attrsFailEvaluation = true;
-  };
-
-  packages = recurseIntoAttrs (vanillaPackages // rtPackages // {
+  packages = recurseIntoAttrs (vanillaPackages // {
 
     # Intentionally lacks recurseIntoAttrs, as -rc kernels will quite likely break out-of-tree modules and cause failed Hydra builds.
     linux_testing = packagesFor kernels.linux_testing;
@@ -600,6 +551,11 @@ in {
     linux_xanmod_latest = throw "linux_xanmod_latest has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_libre = builtins.throw "linux_libre has been removed due to lack of support"; # CTRL-OS 2025-07-25
     linux_latest_libre = builtins.throw "linux_latest_libre has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_rt_5_4  = builtins.throw "linux_rt_5_4 has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_rt_5_10 = builtins.throw "linux_rt_5_10 has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_rt_5_15 = builtins.throw "linux_rt_5_15 has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_rt_6_1  = builtins.throw "linux_rt_6_1 has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_rt_6_6  = builtins.throw "linux_rt_6_6 has been removed due to lack of support"; # CTRL-OS 2025-07-25
   });
 
   packageAliases = {
@@ -607,8 +563,8 @@ in {
     # Update this when adding the newest kernel major version!
     linux_latest = packages.linux_6_12;
     linux_mptcp = throw "'linux_mptcp' has been moved to https://github.com/teto/mptcp-flake";
-    linux_rt_default = packages.linux_rt_5_15;
-    linux_rt_latest = packages.linux_rt_6_6;
+    linux_rt_default = builtins.throw "linux_rt_default has been removed due to lack of support"; # CTRL-OS 2025-07-25
+    linux_rt_latest = builtins.throw "linux_rt_latest has been removed due to lack of support"; # CTRL-OS 2025-07-25
   } // { __attrsFailEvaluation = true; };
 
   manualConfig = callPackage ../os-specific/linux/kernel/manual-config.nix {};

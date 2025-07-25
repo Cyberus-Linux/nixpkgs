@@ -35,11 +35,6 @@ let
     ) args);
   kernels = (removeAttrs pkgs.linuxKernel.vanillaPackages [ "__attrsFailEvaluation" ]) // {
     inherit (pkgs.linuxKernel.packages)
-      linux_rt_5_4
-      linux_rt_5_10
-      linux_rt_5_15
-      linux_rt_6_1
-
       linux_testing
       ;
   };
