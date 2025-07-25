@@ -562,7 +562,7 @@ in {
 
   packageAliases = {
     linux_default = packages.linux_6_6;
-    # Update this when adding the newest kernel major version!
+    # CTRL-OS: This needs to be an SLTS CIP kernel.
     linux_latest = packages.linux_6_12;
     linux_mptcp = throw "'linux_mptcp' has been moved to https://github.com/teto/mptcp-flake";
     linux_rt_default = builtins.throw "linux_rt_default has been removed due to lack of support"; # CTRL-OS 2025-07-25
