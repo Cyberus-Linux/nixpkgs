@@ -71,14 +71,6 @@ in {
       ];
     };
 
-    linux_5_15 = callPackage ../os-specific/linux/kernel/mainline.nix {
-      branch = "5.15";
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-      ];
-    };
-
     linux_6_1 = callPackage ../os-specific/linux/kernel/mainline.nix {
       branch = "6.1";
       kernelPatches = [
@@ -475,7 +467,6 @@ in {
   vanillaPackages = {
     # recurse to build modules for the kernels
     linux_5_10 = recurseIntoAttrs (packagesFor kernels.linux_5_10);
-    linux_5_15 = recurseIntoAttrs (packagesFor kernels.linux_5_15);
     linux_6_1 = recurseIntoAttrs (packagesFor kernels.linux_6_1);
     linux_6_6 = recurseIntoAttrs (packagesFor kernels.linux_6_6);
     linux_6_12 = recurseIntoAttrs (packagesFor kernels.linux_6_12);
@@ -486,6 +477,7 @@ in {
     linux_4_14 = throw "linux 4.14 was removed because it will reach its end of life within 23.11"; # Added 2023-10-11
     linux_4_19 = builtins.throw "linux 4.19 has been removed due to lack of support"; # CTRL-OS 2025-07-28
     linux_5_4 = builtins.throw "linux 5.4 has been removed due to lack of SLTS support"; # CTRL-OS 2025-07-28
+    linux_5_15 = builtins.throw "linux 5.15 has been removed due to lack of SLTS support"; # CTRL-OS 2025-07-28
     linux_5_18 = throw "linux 5.18 was removed because it reached its end of life upstream"; # Added 2022-09-17
     linux_5_19 = throw "linux 5.19 was removed because it reached its end of life upstream"; # Added 2022-11-01
     linux_6_0 = throw "linux 6.0 was removed because it reached its end of life upstream"; # Added 2023-01-20
