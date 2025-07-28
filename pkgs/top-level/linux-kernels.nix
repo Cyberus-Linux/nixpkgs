@@ -63,6 +63,7 @@ in {
     # New vendor kernels should go to nixos-hardware instead.
     # e.g. https://github.com/NixOS/nixos-hardware/tree/master/microsoft/surface/kernel
 
+    # CIP SLTS Projected EOL: 2031-01
     linux_5_10 = callPackage ../os-specific/linux/kernel/mainline.nix {
       branch = "5.10";
       kernelPatches = [
@@ -71,6 +72,7 @@ in {
       ];
     };
 
+    # CIP SLTS Projected EOL: 2033-08
     linux_6_1 = callPackage ../os-specific/linux/kernel/mainline.nix {
       branch = "6.1";
       kernelPatches = [
@@ -79,6 +81,7 @@ in {
       ];
     };
 
+    # LTS EOL: 2026-12
     linux_6_6 = callPackage ../os-specific/linux/kernel/mainline.nix {
       branch = "6.6";
       kernelPatches = [
@@ -87,6 +90,7 @@ in {
       ];
     };
 
+    # CIP SLTS Projected EOL: 2035-06
     linux_6_12 = callPackage ../os-specific/linux/kernel/mainline.nix {
       branch = "6.12";
       kernelPatches = [
