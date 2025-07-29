@@ -154,6 +154,11 @@ stdenv.mkDerivation rec {
       hash = "sha256-znN6lkAB9aAhTGKR1038DzOz5nzuTp+7ylHVqRM7HeI=";
     })
     (fetchpatch {
+      name = "XX_fs_ntfs_fix_aff263187.patch";
+      url = "https://git.savannah.gnu.org/cgit/grub.git/patch/?id=aae2ea619e0f09c353fd6929910f925c92a412c0";
+      hash = "sha256-4fL4jF6OrTgJIrPQi/vw+ez8QqycpiTC7oFb7P+qI5I=";
+    })
+    (fetchpatch {
       name = "16_fs_ntfs_track_the_end_of_the_MFT_attribute_buffer.patch";
       url = "https://git.savannah.gnu.org/cgit/grub.git/patch/?id=237a71184a32d1ef7732f5f49ed6a89c5fe1c99a";
       hash = "sha256-0I/g0qHkWY6PArPn1UaYRhCrrh9bHknADh34v5eSjjM=";
