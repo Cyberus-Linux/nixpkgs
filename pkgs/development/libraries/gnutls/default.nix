@@ -3,11 +3,9 @@
 , fetchurl
 , fetchpatch2
 , zlib
-, lzo
 , libtasn1
 , nettle
 , pkg-config
-, lzip
 , perl
 , gmp
 , autoconf
@@ -60,11 +58,11 @@ in
 
 stdenv.mkDerivation rec {
   pname = "gnutls";
-  version = "3.8.5";
+  version = "3.8.10";
 
   src = fetchurl {
     url = "mirror://gnupg/gnutls/v${lib.versions.majorMinor version}/gnutls-${version}.tar.xz";
-    hash = "sha256-ZiaaLP4OHC2r7Ie9u9irZW85bt2aQN0AaXjgA8+lK/w=";
+    hash = "sha256-23+rfM55Hncn677yM0MByCHXmlUOxVye8Ja2ELA+trc=";
   };
 
   outputs = [ "bin" "dev" "out" ]
@@ -76,25 +74,6 @@ stdenv.mkDerivation rec {
 
   patches = [
     ./nix-ssl-cert-file.patch
-    # Revert https://gitlab.com/gnutls/gnutls/-/merge_requests/1800
-    # dlopen isn't as easy in NixPkgs, as noticed in tests broken by this.
-    # Without getting the libs into RPATH they won't be found.
-    (fetchpatch2 {
-      name = "revert-dlopen-compression.patch";
-      url = "https://gitlab.com/gnutls/gnutls/-/commit/8584908d6b679cd4e7676de437117a793e18347c.diff";
-      revert = true;
-      hash = "sha256-r/+Gmwqy0Yc1LHL/PdPLXlErUBC5JxquLzCBAN3LuRM=";
-    })
-    # Makes the system-wide configuration for RSAES-PKCS1-v1_5 actually apply
-    # and makes it enabled by default when the config file is missing
-    # Without this an error 113 is thrown when using some RSA certificates
-    # see https://gitlab.com/gnutls/gnutls/-/issues/1540
-    # "This is pretty sever[e], since it breaks on letsencrypt-issued RSA keys." (comment from above issue)
-    (fetchpatch2 {
-      name = "fix-rsaes-pkcs1-v1_5-system-wide-configuration.patch";
-      url = "https://gitlab.com/gnutls/gnutls/-/commit/2d73d945c4b1dfcf8d2328c4d23187d62ffaab2d.diff";
-      hash = "sha256-2aWcLff9jzJnY+XSqCIaK/zdwSLwkNlfDeMlWyRShN8=";
-    })
   ];
 
   # Skip some tests:
@@ -109,6 +88,10 @@ stdenv.mkDerivation rec {
     sed 's:/usr/lib64/pkcs11/ /usr/lib/pkcs11/ /usr/lib/x86_64-linux-gnu/pkcs11/:`pkg-config --variable=p11_module_path p11-kit-1`:' -i tests/p11-kit-trust.sh
   '' + lib.optionalString stdenv.hostPlatform.isMusl '' # See https://gitlab.com/gnutls/gnutls/-/issues/945
     sed '2iecho "certtool tests skipped in musl build"\nexit 0' -i tests/cert-tests/certtool.sh
+  ''
+  # https://gitlab.com/gnutls/gnutls/-/issues/1721
+  + ''
+    sed '2iexit 77' -i tests/system-override-compress-cert.sh
   '';
 
   preConfigure = "patchShebangs .";
@@ -124,13 +107,15 @@ stdenv.mkDerivation rec {
       (lib.enableFeature cxxBindings "cxx")
     ] ++ lib.optionals (stdenv.hostPlatform.isMinGW) [
       "--disable-doc"
+    ] ++ [ # do not dlopen in nixpkgs
+        "--with-zlib=link"
     ];
 
   enableParallelBuilding = true;
 
   hardeningDisable = [ "trivialautovarinit" ];
 
-  buildInputs = [ lzo lzip libtasn1 libidn2 zlib gmp libunistring unbound gettext libiconv ]
+  buildInputs = [ libtasn1 libidn2 zlib gmp libunistring unbound gettext libiconv ]
     ++ lib.optional (withP11-kit) p11-kit
     ++ lib.optional (tpmSupport && stdenv.isLinux) trousers;
 
@@ -166,8 +151,8 @@ stdenv.mkDerivation rec {
 
   passthru.tests = {
     inherit ngtcp2-gnutls curlWithGnuTls ffmpeg emacs qemu knot-resolver samba openconnect;
-    inherit (ocamlPackages) ocamlnet;
-    haskell-gnutls = haskellPackages.gnutls;
+    #inherit (ocamlPackages) ocamlnet;
+    #haskell-gnutls = haskellPackages.gnutls;
     python3-gnutls = python3Packages.python3-gnutls;
     rsyslog = rsyslog.override { withGnutls = true; };
     static = pkgsStatic.gnutls;
