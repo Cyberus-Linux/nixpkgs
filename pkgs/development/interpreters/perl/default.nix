@@ -55,18 +55,24 @@ let
 
 in rec {
   # Maint version
-  perl536 = callPackage ./interpreter.nix {
+  perl536 = (callPackage ./interpreter.nix {
     self = perl536;
     version = "5.36.3";
     sha256 = "sha256-8qGtiBFjkaF2Ji3ULfxS7yKvtA9MDpgQ8V1WHm8ccmo=";
     inherit passthruFun;
-  };
+  }).overrideAttrs({ meta ? {}, ... }: {
+    meta = meta // {
+      knownVulnerabilities = (meta.knownVulnerabilities or []) ++ [
+        "CVE-2024-56406"
+      ];
+    };
+  });
 
   # Maint version
   perl538 = callPackage ./interpreter.nix {
     self = perl538;
-    version = "5.38.2";
-    sha256 = "sha256-oKMVNEUet7g8fWWUpJdUOlTUiLyQygD140diV39AZV4=";
+    version = "5.38.4";
+    sha256 = "sha256-+4iKzPi1C1GA6RFm5RU2CL4pTFfBmHjpX3ZZwfHxJ1g=";
     inherit passthruFun;
   };
 }
