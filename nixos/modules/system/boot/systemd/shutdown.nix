@@ -59,6 +59,7 @@ in
         what = "tmpfs";
         where = "/run/initramfs";
         type = "tmpfs";
+        options = "mode=0700";
       }
     ];
 
