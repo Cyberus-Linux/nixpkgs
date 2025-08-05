@@ -95,6 +95,9 @@ stdenv.mkDerivation (finalAttrs: {
       # not need to know binutils' BINDIR at all. It's an absolute path
       # where libraries are stored.
       ./plugins-no-BINDIR.patch
+
+      # https://gitlab.alpinelinux.org/alpine/aports/-/blob/529accc30c6be92e4143a7aaa022bbcd5839ac40/main/binutils/CVE-2025-0840.patch
+      ./CVE-2025-0840.patch
     ]
     ++ lib.optional targetPlatform.isiOS ./support-ios.patch
     # Adds AVR-specific options to "size" for compatibility with Atmel's downstream distribution
