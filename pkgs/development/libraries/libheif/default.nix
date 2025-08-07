@@ -1,42 +1,37 @@
-{
-  lib,
-  stdenv,
-  fetchFromGitHub,
-  cmake,
-  pkg-config,
-  dav1d,
-  rav1e,
-  libde265,
-  x265,
-  libpng,
-  libjpeg,
-  libaom,
-  gdk-pixbuf,
+{ lib
+, stdenv
+, fetchFromGitHub
+, cmake
+, pkg-config
+, dav1d
+, rav1e
+, libde265
+, x265
+, libpng
+, libjpeg
+, libaom
+, gdk-pixbuf
 
-  # for passthru.tests
-  gimp,
-  imagemagick,
-  imlib2Full,
-  imv,
-  vips,
+# for passthru.tests
+, gimp
+, imagemagick
+, imlib2Full
+, imv
+, python3Packages
+, vips
 }:
 
 stdenv.mkDerivation rec {
   pname = "libheif";
-  version = "1.17.6";
+  version = "1.18.2";
 
-  outputs = [
-    "bin"
-    "out"
-    "dev"
-    "man"
-  ];
+  outputs = [ "bin" "out" "dev" "man" ];
 
   src = fetchFromGitHub {
     owner = "strukturag";
     repo = "libheif";
     rev = "v${version}";
-    sha256 = "sha256-pp+PjV/pfExLqzFE61mxliOtVAYOePh1+i1pwZxDLAM=";
+    hash = "sha256-Z21E2b4E9jGtwR1RpFMAbGsWFw6jXn++WexlzdoyZzE=";
   };
 
   nativeBuildInputs = [
@@ -65,13 +60,8 @@ stdenv.mkDerivation rec {
   '';
 
   passthru.tests = {
-    inherit
-      gimp
-      imagemagick
-      imlib2Full
-      imv
-      vips
-      ;
+    inherit gimp imagemagick imlib2Full imv vips;
+    inherit (python3Packages) pillow-heif;
   };
 
   meta = {
