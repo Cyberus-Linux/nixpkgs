@@ -23,6 +23,10 @@ stdenv.mkDerivation rec {
     hash = "sha256-3n8BnjZ7uMH8quoiT60yTU7poyOtoEmzNMOLa1+r7X0=";
   };
 
+  patches = [
+    ./CVE-2025-6140.patch
+  ];
+
   nativeBuildInputs = [ cmake ];
   # Required to build tests, even if they aren't executed
   buildInputs = [ catch2_3 ];
