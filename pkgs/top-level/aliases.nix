@@ -711,6 +711,7 @@ mapAliases ({
   linuxPackages_6_11 = linuxKernel.packages.linux_6_11;
   linuxPackages_6_12 = linuxKernel.packages.linux_6_12;
   linuxPackages_6_15 = linuxKernel.packages.linux_6_15;
+  linuxPackages_6_16 = linuxKernel.packages.linux_6_16;
   linuxPackages_rpi0 = linuxKernel.packages.linux_rpi1;
   linuxPackages_rpi02w = linuxKernel.packages.linux_rpi3;
   linuxPackages_rpi1 = linuxKernel.packages.linux_rpi1;
@@ -743,6 +744,7 @@ mapAliases ({
   linux_6_11 = linuxKernel.packages.linux_6_11.kernel;
   linux_6_12 = linuxKernel.packages.linux_6_12.kernel;
   linux_6_15 = linuxKernel.packages.linux_6_15.kernel;
+  linux_6_16 = linuxKernel.packages.linux_6_16.kernel;
   linux_rpi0 = linuxKernel.packages.linux_rpi1.kernel;
   linux_rpi02w = linuxKernel.packages.linux_rpi3.kernel;
   linux_rpi1 = linuxKernel.packages.linux_rpi1.kernel;
