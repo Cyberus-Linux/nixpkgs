@@ -493,7 +493,7 @@ in {
     linux_6_8 = throw "linux 6.8 was removed because it reached its end of life upstream"; # Added 2024-08-02
     linux_6_9 = throw "linux 6.9 was removed because it reached its end of life upstream"; # Added 2024-08-02
     linux_6_10 = throw "linux 6.10 was removed because it reached its end of life upstream"; # Added 2024-10-23
-    linux_6_11 = throw "linux 6.10 was removed because it reached its end of life upstream"; # CTRL-OS 2025-07-25
+    linux_6_11 = throw "linux 6.11 was removed because it reached its end of life upstream"; # CTRL-OS 2025-07-25
   };
 
   packages = recurseIntoAttrs (vanillaPackages // {
