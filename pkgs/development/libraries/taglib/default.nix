@@ -2,6 +2,7 @@
   lib,
   stdenv,
   fetchFromGitHub,
+  fetchpatch,
   cmake,
   zlib,
   testers,
@@ -17,6 +18,14 @@ stdenv.mkDerivation (finalAttrs: {
     rev = "v${finalAttrs.version}";
     hash = "sha256-QX0EpHGT36UsgIfRf5iALnwxe0jjLpZvCTbk8vSMFF4=";
   };
+
+  patches = [
+    (fetchpatch {
+      name = "CVE-2023-47466.patch";
+      url = "https://github.com/taglib/taglib/commit/dfa33bec0806cbb45785accb8cc6c2048a7d40cf.patch";
+      hash = "sha256-COP3mDbPM56RRNQCFpKvUUjmIJC2jpphcq68t2yliiQ=";
+    })
+  ];
 
   nativeBuildInputs = [ cmake ];
 
