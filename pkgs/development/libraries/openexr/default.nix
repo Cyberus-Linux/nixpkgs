@@ -41,6 +41,9 @@ stdenv.mkDerivation rec {
       extraPrefix = "OpenEXR/IlmImf/";
       sha256 = "sha256-DrpldpNgN5pWKzIuuPIrynGX3EpP8YhJlu+lLfNFGxQ=";
     })
+    # Backport of:
+    # https://github.com/AcademySoftwareFoundation/openexr/commit/7aa89e1d09b09d9f5dbb96976ee083a331ab9d71
+    ./CVE-2024-31047.patch
 
     # GCC 13 fixes
     ./gcc-13.patch
