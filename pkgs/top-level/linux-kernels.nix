@@ -99,8 +99,8 @@ in {
       ];
     };
 
-    linux_6_15 = callPackage ../os-specific/linux/kernel/mainline.nix {
-      branch = "6.15";
+    linux_6_16 = callPackage ../os-specific/linux/kernel/mainline.nix {
+      branch = "6.16";
       kernelPatches = [
         kernelPatches.bridge_stp_helper
         kernelPatches.request_key_helper
@@ -137,6 +137,7 @@ in {
     linux_6_9 = throw "linux 6.9 was removed because it has reached its end of life upstream";
     linux_6_10 = throw "linux 6.10 was removed because it has reached its end of life upstream";
     linux_6_11 = throw "linux 6.11 was removed because it has reached its end of life upstream";
+    linux_6_15 = throw "linux 6.15 was removed because it has reached its end of life upstream";
 
     linux_xanmod_tt = throw "linux_xanmod_tt was removed because upstream no longer offers this option";
 
@@ -474,7 +475,7 @@ in {
     linux_6_1 = recurseIntoAttrs (packagesFor kernels.linux_6_1);
     linux_6_6 = recurseIntoAttrs (packagesFor kernels.linux_6_6);
     linux_6_12 = recurseIntoAttrs (packagesFor kernels.linux_6_12);
-    linux_6_15 = recurseIntoAttrs (packagesFor kernels.linux_6_15);
+    linux_6_16 = recurseIntoAttrs (packagesFor kernels.linux_6_16);
     __attrsFailEvaluation = true;
   } // lib.optionalAttrs config.allowAliases {
     linux_4_9 = throw "linux 4.9 was removed because it will reach its end of life within 22.11"; # Added 2022-11-08
@@ -493,7 +494,8 @@ in {
     linux_6_8 = throw "linux 6.8 was removed because it reached its end of life upstream"; # Added 2024-08-02
     linux_6_9 = throw "linux 6.9 was removed because it reached its end of life upstream"; # Added 2024-08-02
     linux_6_10 = throw "linux 6.10 was removed because it reached its end of life upstream"; # Added 2024-10-23
-    linux_6_11 = throw "linux 6.10 was removed because it reached its end of life upstream"; # CTRL-OS 2025-07-25
+    linux_6_11 = throw "linux 6.11 was removed because it reached its end of life upstream"; # CTRL-OS 2025-07-25
+    linux_6_15 = throw "linux 6.15 was removed because it reached its end of life upstream"; # CTRL-OS 2025-07-25
   };
 
   packages = recurseIntoAttrs (vanillaPackages // {
