@@ -1,6 +1,7 @@
 { lib
 , stdenv
 , fetchurl
+, fetchpatch
 , pkg-config
 , autoreconfHook
 , libxml2
@@ -25,6 +26,16 @@ stdenv.mkDerivation (finalAttrs: {
     url = "mirror://gnome/sources/libxslt/${lib.versions.majorMinor finalAttrs.version}/libxslt-${finalAttrs.version}.tar.xz";
     hash = "sha256-Wj1rODylr8I1sXERjpD1/2qifp/qMwMGUjGm1APwGDo=";
   };
+
+  patches = [
+    (fetchpatch {
+      name = "CVE-2025-7424.patch";
+      # https://gitlab.gnome.org/GNOME/libxslt/-/issues/139#note_2479564
+      url = "https://gitlab.gnome.org/-/project/1762/uploads/627ae84cb0643d9adf6e5c86947f6be6/gnome-libxslt-bug-139-apple-fix.diff";
+      # Also available: https://sources.debian.org/data/main/libx/libxslt/1.1.43-0.2/debian/patches/gnome-libxslt-bug-139-apple-fix.diff
+      hash = "sha256-/qFvotMKNyjR+xlD+bTV2jZLvapXJ8CPc+OdgtZXjXo=";
+    })
+  ];
 
   strictDeps = true;
 
