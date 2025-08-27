@@ -123,6 +123,14 @@ stdenv.mkDerivation (finalAttrs: {
       url = "https://gitlab.gnome.org/GNOME/glib/-/commit/ec0b708b981af77fef8e4bbb603cde4de4cd2e29.patch";
       hash = "sha256-2W8UcqhTWGpJWH8Z/JCn9g0fbPXY8O7XTGd4TSUGwgM=";
     })
+
+    # gstring: Fix overflow check when expanding the string
+    # https://gitlab.gnome.org/GNOME/glib/-/merge_requests/4656
+    (fetchpatch {
+      name = "CVE-2025-6052.patch";
+      url = "https://gitlab.gnome.org/GNOME/glib/-/commit/987309f23ada52592bffdb5db0d8a5d58bd8097b.patch";
+      hash = "sha256-EtXMYPNZ77mNSjaInNHCsWI5wiladZRPYJNrEzZcgTs=";
+    })
   ];
 
   outputs = [ "bin" "out" "dev" "devdoc" ];
