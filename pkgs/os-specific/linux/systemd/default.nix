@@ -179,7 +179,7 @@ assert withBootloader -> withEfi;
 let
   wantCurl = withRemote || withImportd;
   wantGcrypt = withResolved || withImportd;
-  version = "255.9";
+  version = "255.22";
 
   # Use the command below to update `releaseTimestamp` on every (major) version
   # change. More details in the commentary at mesonFlags.
@@ -197,7 +197,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "systemd";
     repo = "systemd-stable";
     rev = "v${version}";
-    hash = "sha256-fnMvBYyMRQrP2x//8ntGTSwoHOtFk2TQ4S5fwcsSLDU=";
+    hash = "sha256-uYXF47/oqus0YFYrg3zduEsYuioSbSbTu/zBYHIGvhE=";
   };
 
   # On major changes, or when otherwise required, you *must* :

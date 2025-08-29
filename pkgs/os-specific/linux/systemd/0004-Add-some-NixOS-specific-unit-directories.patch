@@ -16,7 +16,7 @@ Original-Author: Eelco Dolstra <eelco.dolstra@logicblox.com>
  2 files changed, 6 insertions(+), 20 deletions(-)
 
 diff --git a/src/basic/path-lookup.c b/src/basic/path-lookup.c
-index 4e3d59fc56..0d18b9a2d0 100644
+index d76705bd4b..c96ebeba70 100644
 --- a/src/basic/path-lookup.c
 +++ b/src/basic/path-lookup.c
 @@ -92,11 +92,7 @@ int xdg_user_data_dir(char **ret, const char *suffix) {

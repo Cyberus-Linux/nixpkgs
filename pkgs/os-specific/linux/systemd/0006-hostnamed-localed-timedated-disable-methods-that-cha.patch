@@ -11,10 +11,10 @@ Subject: [PATCH] hostnamed, localed, timedated: disable methods that change
  3 files changed, 25 insertions(+)
 
 diff --git a/src/hostname/hostnamed.c b/src/hostname/hostnamed.c
-index e1d53f2395..a224e6dadc 100644
+index fc7a97fb99..4c1a5e27bd 100644
 --- a/src/hostname/hostnamed.c
 +++ b/src/hostname/hostnamed.c
-@@ -1053,6 +1053,9 @@ static int method_set_static_hostname(sd_bus_message *m, void *userdata, sd_bus_
+@@ -1091,6 +1091,9 @@ static int method_set_static_hostname(sd_bus_message *m, void *userdata, sd_bus_
          if (r < 0)
                  return r;
  
@@ -24,7 +24,7 @@ index e1d53f2395..a224e6dadc 100644
          name = empty_to_null(name);
  
          context_read_etc_hostname(c);
-@@ -1116,6 +1119,9 @@ static int set_machine_info(Context *c, sd_bus_message *m, int prop, sd_bus_mess
+@@ -1154,6 +1157,9 @@ static int set_machine_info(Context *c, sd_bus_message *m, int prop, sd_bus_mess
          if (r < 0)
                  return r;
  
@@ -69,10 +69,10 @@ index 5d96237fae..9af35cd29c 100644
  
          r = x11_context_verify_and_warn(&in, LOG_ERR, error);
 diff --git a/src/timedate/timedated.c b/src/timedate/timedated.c
-index c7be30f563..50f8aa8675 100644
+index b0957a6bda..5a263ce7f4 100644
 --- a/src/timedate/timedated.c
 +++ b/src/timedate/timedated.c
-@@ -659,6 +659,10 @@ static int method_set_timezone(sd_bus_message *m, void *userdata, sd_bus_error *
+@@ -661,6 +661,10 @@ static int method_set_timezone(sd_bus_message *m, void *userdata, sd_bus_error *
          if (r < 0)
                  return r;
  
@@ -83,7 +83,7 @@ index c7be30f563..50f8aa8675 100644
          if (!timezone_is_valid(z, LOG_DEBUG))
                  return sd_bus_error_setf(error, SD_BUS_ERROR_INVALID_ARGS, "Invalid or not installed time zone '%s'", z);
  
-@@ -737,6 +741,9 @@ static int method_set_local_rtc(sd_bus_message *m, void *userdata, sd_bus_error
+@@ -739,6 +743,9 @@ static int method_set_local_rtc(sd_bus_message *m, void *userdata, sd_bus_error
          if (r < 0)
                  return r;
  
@@ -93,7 +93,7 @@ index c7be30f563..50f8aa8675 100644
          if (lrtc == c->local_rtc && !fix_system)
                  return sd_bus_reply_method_return(m, NULL);
  
-@@ -917,6 +924,9 @@ static int method_set_ntp(sd_bus_message *m, void *userdata, sd_bus_error *error
+@@ -919,6 +926,9 @@ static int method_set_ntp(sd_bus_message *m, void *userdata, sd_bus_error *error
          if (r < 0)
                  return r;
  
