@@ -12,7 +12,6 @@
   lzo,
   openssl,
   pkg-config,
-  sharutils,
   xz,
   zlib,
   zstd,
@@ -31,22 +30,14 @@
 assert xarSupport -> libxml2 != null;
 stdenv.mkDerivation (finalAttrs: {
   pname = "libarchive";
-  version = "3.7.9";
+  version = "3.8.1";
 
   src = fetchFromGitHub {
     owner = "libarchive";
     repo = "libarchive";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-N1PzkkM6k35GuteKijsJZw5Og0DiM70VihN6qlLqGfU=";
+    hash = "sha256-KN5SvQ+/g/OOa+hntMX3D8p5IEWO0smke5WK+DwrOH0=";
   };
-
-  patches = [
-    (fetchpatch {
-      name = "CVE-2025-5914";
-      url = "https://github.com/libarchive/libarchive/commit/196029dd0a17cd17c916eada9085839032b76ec9.patch";
-      hash = "sha256-nTJlDyuh4CvMWqlBo3kOMDxeKcu2DzHb7uc2Rq+uLK8=";
-    })
-  ];
 
   outputs = [
     "out"
@@ -99,7 +90,6 @@ stdenv.mkDerivation (finalAttrs: {
       zlib
       zstd
     ]
-    ++ lib.optional stdenv.hostPlatform.isUnix sharutils
     ++ lib.optionals stdenv.isLinux [
       acl
       attr
