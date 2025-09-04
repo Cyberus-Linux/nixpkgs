@@ -2,6 +2,7 @@
   stdenv,
   lib,
   fetchFromGitHub,
+  fetchpatch,
   cmake,
   docbook-xsl-nons,
   libxslt,
@@ -87,6 +88,13 @@ stdenv.mkDerivation rec {
     rev = version;
     hash = "sha256-w+xyMNFmKylSheK0yAGl8J6MXly/HUjjAfR9Qq3s/kA=";
   };
+
+  patches = [
+    (fetchpatch {
+      url = "https://salsa.debian.org/debian-remote-team/freerdp2/-/raw/debian/2.11.7+dfsg1-6/debian/patches/CVE-2024-32661.patch";
+      hash = "sha256-fkZp4MMpfZyOyv1IctC9KeieJC1X+iYXi9ANT0aQVWE=";
+    })
+  ];
 
   postPatch =
     ''
