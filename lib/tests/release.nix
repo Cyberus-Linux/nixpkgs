@@ -1,6 +1,14 @@
 { # The pkgs used for dependencies for the testing itself
   # Don't test properties of pkgs.lib, but rather the lib in the parent directory
-  pkgs ? import ../.. {} // { lib = throw "pkgs.lib accessed, but the lib tests should use nixpkgs' lib path directly!"; },
+  pkgs ?
+    import ../.. {
+      config = {
+        permittedInsecurePackages = [ "nix-2.3.18" ];
+      };
+    }
+    // {
+      lib = throw "pkgs.lib accessed, but the lib tests should use nixpkgs' lib path directly!";
+    },
   nix ? pkgs-nixVersions.stable,
   nixVersions ? [ pkgs-nixVersions.minimum nix pkgs-nixVersions.latest ],
   pkgs-nixVersions ? import ./nix-for-tests.nix { inherit pkgs; },
