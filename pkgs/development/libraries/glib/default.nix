@@ -61,11 +61,11 @@ in
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "glib";
-  version = "2.80.2";
+  version = "2.80.5";
 
   src = fetchurl {
     url = "mirror://gnome/sources/glib/${lib.versions.majorMinor finalAttrs.version}/glib-${finalAttrs.version}.tar.xz";
-    hash = "sha256-uc+296W9WzEjj9XVbfImst2l6jdhFHW/ifag+UAP6L0=";
+    hash = "sha256-nyOp3oA8aVu/3n431mJrGLmoOGlondeQGb865mw+Z3E=";
   };
 
   patches = lib.optionals stdenv.isDarwin [
@@ -74,15 +74,6 @@ stdenv.mkDerivation (finalAttrs: {
     ./quark_init_on_demand.patch
     ./gobject_init_on_demand.patch
   ] ++ [
-    # Fix double-free & segfault issues on menu and dbus connection action group export failures
-    # https://gitlab.gnome.org/GNOME/glib/-/merge_requests/4073
-    # Remove when version > 2.80.2
-    (fetchpatch {
-      name = "GLib-Fix-memory-problems-on-gmenuexporter-and-gactiongroupexporter-error-paths.patch";
-      url = "https://gitlab.gnome.org/GNOME/glib/-/commit/b9490a499a004618c883f180b1081a166ff1a86b.patch";
-      hash = "sha256-c6uZ9NEhg26/2RdgjQ4s5ErCDm5HH6T/tfJXTwh/H6o=";
-    })
-
     # This patch lets GLib's GDesktopAppInfo API watch and notice changes
     # to the Nix user and system profiles.  That way, the list of available
     # applications shown by the desktop environment is immediately updated
@@ -131,6 +122,14 @@ stdenv.mkDerivation (finalAttrs: {
       name = "CVE-2024-52533.patch";
       url = "https://gitlab.gnome.org/GNOME/glib/-/commit/ec0b708b981af77fef8e4bbb603cde4de4cd2e29.patch";
       hash = "sha256-2W8UcqhTWGpJWH8Z/JCn9g0fbPXY8O7XTGd4TSUGwgM=";
+    })
+
+    # gstring: Fix overflow check when expanding the string
+    # https://gitlab.gnome.org/GNOME/glib/-/merge_requests/4656
+    (fetchpatch {
+      name = "CVE-2025-6052.patch";
+      url = "https://gitlab.gnome.org/GNOME/glib/-/commit/987309f23ada52592bffdb5db0d8a5d58bd8097b.patch";
+      hash = "sha256-EtXMYPNZ77mNSjaInNHCsWI5wiladZRPYJNrEzZcgTs=";
     })
   ];
 
