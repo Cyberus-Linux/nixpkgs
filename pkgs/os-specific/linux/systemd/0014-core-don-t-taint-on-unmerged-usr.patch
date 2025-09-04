@@ -17,10 +17,10 @@ See also: https://github.com/systemd/systemd/issues/24191
  1 file changed, 3 deletions(-)
 
 diff --git a/src/core/manager.c b/src/core/manager.c
-index 5dc7d4504f..6208c9aa31 100644
+index a8491f2a97..603965237e 100644
 --- a/src/core/manager.c
 +++ b/src/core/manager.c
-@@ -4800,9 +4800,6 @@ char* manager_taint_string(const Manager *m) {
+@@ -4823,9 +4823,6 @@ char* manager_taint_string(const Manager *m) {
          const char* stage[12] = {};
          size_t n = 0;
  
