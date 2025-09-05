@@ -1,6 +1,7 @@
 { lib
 , stdenv
 , fetchurl
+, fetchpatch
 , pkg-config
 , autoreconfHook
 , libxml2
@@ -8,24 +9,33 @@
 , gettext
 , python
 , ncurses
-, libxcrypt
 , libgcrypt
 , cryptoSupport ? false
 , pythonSupport ? libxml2.pythonSupport
 , gnome
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "libxslt";
-  version = "1.1.39";
+  version = "1.1.43";
 
   outputs = [ "bin" "dev" "out" "doc" "devdoc" ] ++ lib.optional pythonSupport "py";
   outputMan = "bin";
 
   src = fetchurl {
-    url = "mirror://gnome/sources/${pname}/${lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
-    hash = "sha256-KiCtYhFIM5sHWcTU6WcZNi3uZMmgltu6YlugU4RjSfA=";
+    url = "mirror://gnome/sources/libxslt/${lib.versions.majorMinor finalAttrs.version}/libxslt-${finalAttrs.version}.tar.xz";
+    hash = "sha256-Wj1rODylr8I1sXERjpD1/2qifp/qMwMGUjGm1APwGDo=";
   };
+
+  patches = [
+    (fetchpatch {
+      name = "CVE-2025-7424.patch";
+      # https://gitlab.gnome.org/GNOME/libxslt/-/issues/139#note_2479564
+      url = "https://gitlab.gnome.org/-/project/1762/uploads/627ae84cb0643d9adf6e5c86947f6be6/gnome-libxslt-bug-139-apple-fix.diff";
+      # Also available: https://sources.debian.org/data/main/libx/libxslt/1.1.43-0.2/debian/patches/gnome-libxslt-bug-139-apple-fix.diff
+      hash = "sha256-/qFvotMKNyjR+xlD+bTV2jZLvapXJ8CPc+OdgtZXjXo=";
+    })
+  ];
 
   strictDeps = true;
 
@@ -35,7 +45,7 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = [
-    libxml2.dev libxcrypt
+    libxml2.dev
   ] ++ lib.optionals stdenv.isDarwin [
     gettext
   ] ++ lib.optionals pythonSupport [
@@ -51,13 +61,9 @@ stdenv.mkDerivation rec {
   ];
 
   configureFlags = [
-    "--without-debug"
-    "--without-mem-debug"
-    "--without-debugger"
     (lib.withFeature pythonSupport "python")
     (lib.optionalString pythonSupport "PYTHON=${python.pythonOnBuildForHost.interpreter}")
-  ] ++ lib.optionals (!cryptoSupport) [
-    "--without-crypto"
+    (lib.withFeature cryptoSupport "crypto")
   ];
 
   enableParallelBuilding = true;
@@ -75,7 +81,7 @@ stdenv.mkDerivation rec {
     inherit pythonSupport;
 
     updateScript = gnome.updateScript {
-      packageName = pname;
+      packageName = "libxslt";
       versionPolicy = "none";
     };
   };
@@ -88,4 +94,4 @@ stdenv.mkDerivation rec {
     maintainers = with maintainers; [ eelco jtojnar ];
     broken = pythonSupport && !libxml2.pythonSupport; # see #73102 for why this is not an assert
   };
-}
+})
