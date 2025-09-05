@@ -2,6 +2,7 @@
   stdenv,
   lib,
   fetchurl,
+  fetchpatch,
   zlib,
   pkg-config,
   autoreconfHook,
@@ -32,7 +33,7 @@
 
 stdenv.mkDerivation (finalAttrs: rec {
   pname = "libxml2";
-  version = "2.12.9";
+  version = "2.12.10";
 
   outputs =
     [
@@ -47,8 +48,19 @@ stdenv.mkDerivation (finalAttrs: rec {
 
   src = fetchurl {
     url = "mirror://gnome/sources/libxml2/${lib.versions.majorMinor version}/libxml2-${version}.tar.xz";
-    hash = "sha256-WZEttTarVqOZZInqApl2jHvP/lcWnwI15/liqR9INZA=";
+    hash = "sha256-w9jAw0qjkJj2ZXb+UZadsSpRALlWIz3FZQb3qGeb6ZU=";
   };
+
+  patches = [
+    (fetchpatch {
+      url = "https://salsa.debian.org/xml-sgml-team/libxml2/-/raw/debian/2.12.7+dfsg+really2.9.14-1/debian/patches/CVE-2025-32414.patch";
+      hash = "sha256-49ie3zX1Zl5yfr4OEbZpbBSXHuosDLVj/MxBGcvLV18=";
+    })
+    (fetchpatch {
+      url = "https://salsa.debian.org/xml-sgml-team/libxml2/-/raw/debian/2.12.7+dfsg+really2.9.14-1/debian/patches/CVE-2025-32415.patch";
+      hash = "sha256-6QsdimsnHCtNube+XOPywo1nfL2drc93cJnxJEYCbBk=";
+    })
+  ];
 
   strictDeps = true;
 
