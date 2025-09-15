@@ -2,6 +2,7 @@
   lib,
   stdenv,
   fetchFromGitHub,
+  fetchpatch,
   cmake,
   pkg-config,
   libdeflate,
@@ -32,6 +33,24 @@ stdenv.mkDerivation rec {
     rev = "v${version}";
     hash = "sha256-mQ9B3MJY2/bg0yY/7jUJrAXM6ozAHT5fmwES5Q1SGxw=";
   };
+
+  patches = [
+    (fetchpatch {
+      name = "CVE-2024-56826.patch";
+      url = "https://github.com/uclouvain/openjpeg/commit/98592ee6d6904f1b48e8207238779b89a63befa2.patch";
+      hash = "sha256-1ScnEZAPuvclyRME5kbeo7dBMG31Njs5CaYC4sGyx08=";
+    })
+    (fetchpatch {
+      name = "CVE-2024-56827.patch";
+      url = "https://github.com/uclouvain/openjpeg/commit/e492644fbded4c820ca55b5e50e598d346e850e8.patch";
+      hash = "sha256-v+odu4/MXRA+RKOlPO+m/Xk66BMH6mOcEN4ScHn3VAo=";
+    })
+    (fetchpatch {
+      name = "CVE-2025-54874.patch";
+      url = "https://github.com/uclouvain/openjpeg/commit/f809b80c67717c152a5ad30bf06774f00da4fd2d.patch";
+      hash = "sha256-hdFaq6xFViVPtEFnSwrV23G+FerI1U5ulaW0Sb3qtrU=";
+    })
+  ];
 
   outputs = [
     "out"
