@@ -290,8 +290,8 @@ in {
   };
 
   openssl_3 = common {
-    version = "3.0.16";
-    hash = "sha256-V+A8UP6rXTGxUq8rdk8QN5rs2O6S8WyYWYPOSpn374Y=";
+    version = "3.0.17";
+    hash = "sha256-39135OobV/86bb3msL3D8x21rJnn/dTq+eH7tuwtuM4=";
 
     patches = [
       ./3.0/nix-ssl-cert-file.patch
@@ -313,8 +313,8 @@ in {
   };
 
   openssl_3_2 = common {
-    version = "3.2.3";
-    hash = "sha256-UrXxxrgCK8WGjDCMVPt3cF5wLWxvRZT5mg3yFqz0Yjk=";
+    version = "3.2.5";
+    hash = "sha256-s2NH0CSg9b0J/vzWr3pYuzCUYIDrjOj3vnhWIZDQmHk=";
 
     patches = [
       ./3.0/nix-ssl-cert-file.patch
@@ -336,8 +336,8 @@ in {
   };
 
   openssl_3_3 = common {
-    version = "3.3.2";
-    hash = "sha256-LopAsBl5r+i+C7+z3l3BxnCf7bRtbInBDaEUq1/D0oE=";
+    version = "3.3.4";
+    hash = "sha256-jRpfwyPT/TUdwFRYRX/Uj3hlLSpJjh1w/+oHtNDrP6g=";
 
     patches = [
       ./3.0/nix-ssl-cert-file.patch
