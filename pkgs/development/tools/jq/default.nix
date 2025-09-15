@@ -2,6 +2,7 @@
   lib,
   stdenv,
   fetchurl,
+  fetchpatch,
   removeReferencesTo,
   autoreconfHook,
   bison,
@@ -18,6 +19,21 @@ stdenv.mkDerivation rec {
     url = "https://github.com/jqlang/jq/releases/download/jq-${version}/jq-${version}.tar.gz";
     hash = "sha256-R4ycoSn9LjRD/icxS0VeIR4NjGC8j/ffcDhz3u7lgMI=";
   };
+
+  patches = [
+    (fetchpatch {
+      url = "https://salsa.debian.org/debian/jq/-/raw/debian/1.7.1-6+deb13u1/debian/patches/CVE-2024-23337.patch";
+      hash = "sha256-tbHsi83Qqv45TnhP0UuKKAkmwL85s7JdFipQemg2f88=";
+    })
+    (fetchpatch {
+      url = "https://salsa.debian.org/debian/jq/-/raw/debian/1.7.1-6+deb13u1/debian/patches/CVE-2024-53427.patch";
+      hash = "sha256-d4ktaIZ5EsxNf426uzLmUrd0nl1gYOTJwl91nAa3XDk=";
+    })
+    (fetchpatch {
+      url = "https://salsa.debian.org/debian/jq/-/raw/debian/1.7.1-6+deb13u1/debian/patches/CVE-2025-48060.patch";
+      hash = "sha256-7TZfIfasNnck8RFJJpF8l8Mep08v8dnZaPJPyKFg8DA=";
+    })
+  ];
 
   outputs = [
     "bin"
