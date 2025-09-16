@@ -330,5 +330,12 @@ stdenv.mkDerivation (finalAttrs: {
       || rustlsSupport;
     pkgConfigModules = [ "libcurl" ];
     mainProgram = "curl";
+    knownVulnerabilities =
+      []
+      ++ lib.optionals (wolfsslSupport) [
+        # https://curl.se/docs/CVE-2025-5025.html
+        "CVE-2025-5025"
+      ]
+    ;
   };
 })
