@@ -7,6 +7,7 @@
   util-linux,
   openssl,
   cacert,
+  libfaketime,
   # The primary --enable-XXX variant. 'all' enables most features, but causes build-errors for some software,
   # requiring to build a special variant for that software. Example: 'haproxy'
   variant ? "all",
@@ -31,6 +32,12 @@ stdenv.mkDerivation (finalAttrs: {
     # ensure test detects musl-based systems too
     substituteInPlace scripts/ocsp-stapling2.test \
       --replace '"linux-gnu"' '"linux-"'
+
+    # Ensures tests that rely on dated assets will pass.
+    # NOTE: Use `@`, otherwise faketime will freeze the time, and tests
+    #       relying on timeouts will fail.
+    substituteInPlace scripts/unit.test.in \
+      --replace-fail 'exec ' 'exec faketime -f "@2025-01-01 12:34:56" '
   '';
 
   configureFlags =
@@ -94,6 +101,7 @@ stdenv.mkDerivation (finalAttrs: {
   nativeCheckInputs = [
     openssl
     cacert
+    libfaketime
   ];
 
   postInstall = ''

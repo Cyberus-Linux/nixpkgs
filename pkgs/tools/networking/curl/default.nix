@@ -106,6 +106,27 @@ stdenv.mkDerivation (finalAttrs: {
 
       # https://curl.se/docs/CVE-2024-6197.html
       ./0001-x509asn1-remove-superfluous-free.patch
+
+      # https://curl.se/docs/CVE-2024-11053.html
+      ./CVE-2024-11053-1-netrc-address-several-netrc-parser-.patch
+      ./CVE-2024-11053-2-netrc-fix-password-only-entries.patch
+
+      # https://curl.se/docs/CVE-2024-7264.html
+      ./CVE-2024-7264-1-x509asn1-clean-up-GTime2str.patch
+      ./CVE-2024-7264-2-x509asn1-unittests-and-fixes-for-gti.patch
+
+      # https://curl.se/docs/CVE-2024-9681.html
+      ./CVE-2024-9681-hsts-improve-subdomain-handling.patch
+
+      # https://curl.se/docs/CVE-2025-0167.html
+      ./CVE-2025-0167-netrc-default-with-no-credentials-is-n.patch
+
+      # https://curl.se/docs/CVE-2025-9086.html
+      ./CVE-2025-9086-cookie-don-t-treat-the-leading-slash-a.patch
+
+      # This is required to correctly fix some of the following backports.
+      # For CVE-2024-11053 and CVE-2025-0167.
+      ./REQUIRED-BACKPORT-url-use-same-credentials-on-redire.patch
     ]
     ++ lib.optionals gnutlsSupport [
       # https://curl.se/docs/CVE-2024-8096.html
@@ -309,5 +330,12 @@ stdenv.mkDerivation (finalAttrs: {
       || rustlsSupport;
     pkgConfigModules = [ "libcurl" ];
     mainProgram = "curl";
+    knownVulnerabilities =
+      []
+      ++ lib.optionals (wolfsslSupport) [
+        # https://curl.se/docs/CVE-2025-5025.html
+        "CVE-2025-5025"
+      ]
+    ;
   };
 })
