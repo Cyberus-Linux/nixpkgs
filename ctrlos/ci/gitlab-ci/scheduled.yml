@@ -1,3 +1,7 @@
+include:
+  - project: cyberus/embedded/CTRL-OS-Tooling
+    file: gitlab-ci/dtrack-to-gitlab.yml
+
 # Marks a job as being a daily-scheduled job.
 # A *daily* Pipeline schedule needs to be defined in the GitLab interface!
 # A `SCHEDULE_TYPE` variable must be set with the value `daily`.
@@ -42,3 +46,11 @@ scheduled_linux_updates:
     # https://docs.gitlab.com/ci/runners/configure_runners/#git-strategy
     GIT_STRATEGY: clone
     scheduled_command: ./ctrlos/ci/gitlab-ci/linux-updates.rb
+
+dtrack:import:
+  extends:
+    - .scheduled:hourly
+    - .dtrack:import
+  variables:
+    DTRACK_URL: https://dtrack.cyberus-technology.de/
+    DTRACK_PROJECT: 44c26bb2-edf1-45c1-b8bc-0b675c5adeb8
