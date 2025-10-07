@@ -26,4 +26,6 @@ in
   nixVersions.nix_2_21 = messages.nixStable;
   nixVersions.nix_2_22 = messages.nixStable;
   nixVersions.nix_2_23 = messages.nixStable;
+  openssh_gssapi = messages.unsupportedVariant;
+  openssh_hpn = messages.unsupportedVariant;
 }
