@@ -11,6 +11,7 @@ let
   messages = {
     # Generic messages
     unstableVersion = "No support for unstable package versions.";
+    unsupportedVariant = "No support for this package variant at this point in time.";
 
     # Ecosystem or package-specific messages
     nixStable = "Nix 2.24 is the only currently supported Nix version.";
