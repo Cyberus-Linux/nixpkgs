@@ -33,8 +33,10 @@
 , withSecurityKey ? !stdenv.hostPlatform.isStatic
 , withFIDO ? stdenv.hostPlatform.isUnix && !stdenv.hostPlatform.isMusl && withSecurityKey
 , withPAM ? stdenv.hostPlatform.isLinux
-# Attempts to mlock the entire sshd process on startup to prevent swapping.
-, withLinuxMemlock ? stdenv.hostPlatform.isLinux
+  # Attempts to mlock the entire sshd process on startup to prevent swapping.
+  # Currently disabled when PAM support is enabled due to crashes
+  # See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1103418
+, withLinuxMemlock ? (stdenv.hostPlatform.isLinux && !withPAM)
 , dsaKeysSupport ? false
 , linkOpenssl ? true
 , isNixos ? stdenv.hostPlatform.isLinux
@@ -92,7 +94,7 @@ stdenv.mkDerivation {
     "--sbindir=\${out}/bin"
     "--localstatedir=/var"
     "--with-pid-dir=/run"
-    "--with-mantype=man"
+    "--with-mantype=doc"
     "--with-libedit=yes"
     "--disable-strip"
     (lib.withFeature withPAM "pam")
@@ -182,6 +184,13 @@ stdenv.mkDerivation {
   installFlags = [
     "sysconfdir=\${out}/etc/ssh"
   ];
+
+  doInstallCheck = true;
+  installCheckPhase = ''
+    for binary in ssh sshd; do
+      $out/bin/$binary -V 2>&1 | grep -P "$(printf '^OpenSSH_\\Q%s\\E,' "$version")"
+    done
+  '';
 
   passthru.tests = {
     borgbackup-integration = nixosTests.borgbackup;

@@ -19,11 +19,11 @@ in
 {
   openssh = common rec {
     pname = "openssh";
-    version = "10.0p2";
+    version = "10.1p1";
 
     src = fetchurl {
       url = urlFor version;
-      hash = "sha256-AhoucJoO30JQsSVr1anlAEEakN3avqgw7VnO+Q652Fw=";
+      hash = "sha256-ufx6K4JXlGem8vQ+SoHI4d/aYU3bT5slWq/XAgu/B1g=";
     };
 
     extraPatches = [ ./ssh-keysign-8.5.patch ];
@@ -88,7 +88,7 @@ in
 
       (fetchpatch {
         name = "openssh-gssapi.patch";
-        url = "https://salsa.debian.org/ssh-team/openssh/raw/debian/1%25${version}-1/debian/patches/gssapi.patch";
+        url = "https://salsa.debian.org/ssh-team/openssh/raw/debian/1%2510.0p1-1/debian/patches/gssapi.patch";
         hash = "sha256-7Q27tvtCY3b9evC3lbqEz4u7v5DcerjWZfhh8azIAQo=";
       })
     ];

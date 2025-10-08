@@ -11,6 +11,7 @@ let
   messages = {
     # Generic messages
     unstableVersion = "No support for unstable package versions.";
+    unsupportedVariant = "No support for this package variant at this point in time.";
 
     # Ecosystem or package-specific messages
     nixStable = "Nix 2.24 is the only currently supported Nix version.";
@@ -25,4 +26,6 @@ in
   nixVersions.nix_2_21 = messages.nixStable;
   nixVersions.nix_2_22 = messages.nixStable;
   nixVersions.nix_2_23 = messages.nixStable;
+  openssh_gssapi = messages.unsupportedVariant;
+  openssh_hpn = messages.unsupportedVariant;
 }
