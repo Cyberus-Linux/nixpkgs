@@ -80,12 +80,13 @@ if Git.branch_exists?(BRANCH_NAME, remote: GIT_REMOTE)
   Git.fetch(GIT_REMOTE, commit: commit)
   Git.checkout(commit, name: BRANCH_NAME)
 else
-  # Otherwise create from the current commit
-  Git.checkout(name: BRANCH_NAME)
+  commit = Git.get_remote_commit(GIT_REMOTE, branch: TARGET_BRANCH)
+  # Otherwise create from the default branch
+  Git.checkout(commit, name: BRANCH_NAME)
 end
 
 # Keep track of where we started at.
-initial_revision = Git.current_commit()
+initial_revision = Git.get_remote_commit(GIT_REMOTE, branch: TARGET_BRANCH)
 $stderr.puts ":: Started on revision #{initial_revision.inspect}."
 
 # The updater script will automatically commit if the environment variable is set to `1`.
