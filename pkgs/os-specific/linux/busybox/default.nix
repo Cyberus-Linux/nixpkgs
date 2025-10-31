@@ -100,6 +100,8 @@ stdenv.mkDerivation rec {
       url = "https://git.alpinelinux.org/aports/plain/main/busybox/0001-tar-fix-TOCTOU-symlink-race-condition.patch?id=9e42dea5fba84a8afad1f1910b7d3884128a567e";
       hash = "sha256-GmXQhwB1/IPVjXXpGi5RjRvuGJgIMIb7lQKB63m306g=";
     })
+    # https://bugs.busybox.net/show_bug.cgi?id=16018
+    ./0001-tar-fix-CVE-2025-46394-terminal-escape-sequence-inje.patch
   ] ++ lib.optional (stdenv.hostPlatform != stdenv.buildPlatform) ./clang-cross.patch;
 
   separateDebugInfo = true;
