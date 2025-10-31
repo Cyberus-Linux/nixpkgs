@@ -79,7 +79,11 @@ module Git
   end
 
   def current_commit()
-    git("rev-parse", "HEAD", get_stdout: true).strip()
+    revision_for("HEAD")
+  end
+
+  def revision_for(ref)
+    git("rev-parse", ref, get_stdout: true).strip()
   end
 
   # Contrary to `git push`, this requires the remote branch name to be given.
