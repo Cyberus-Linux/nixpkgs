@@ -19,8 +19,8 @@ REPO_ROOT = File.join(__dir__(), "../../..")
 # Remote name.
 GIT_REMOTE = "gitlab_origin"
 
-# Branch this is running against.
-TARGET_BRANCH = ENV["CI_COMMIT_BRANCH"]
+# Only run against the default branch.
+TARGET_BRANCH = ENV["CI_DEFAULT_BRANCH"]
 
 # Use a standardized branch name.
 BRANCH_NAME = "scheduled/linux-kernels"
