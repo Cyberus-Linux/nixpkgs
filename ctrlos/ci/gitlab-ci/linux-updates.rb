@@ -117,6 +117,14 @@ Scheduled update for the Linux kernels.
 
 #{Git.git("log", "--format= - %s", "#{initial_revision}..#{final_revision}", get_stdout: true)}
 
+<details>
+<summary>Additional context...</summary>
+
+```
+CI_JOB_URL = #{ENV["CI_JOB_URL"].inspect()}
+```
+
+</details>
 EOD
 
 $stderr.puts "========================="
