@@ -19,8 +19,8 @@ REPO_ROOT = File.join(__dir__(), "../../..")
 # Remote name.
 GIT_REMOTE = "gitlab_origin"
 
-# Branch this is running against.
-TARGET_BRANCH = ENV["CI_COMMIT_BRANCH"]
+# Only run against the default branch.
+TARGET_BRANCH = ENV["CI_DEFAULT_BRANCH"]
 
 # Use a standardized branch name.
 BRANCH_NAME = "scheduled/linux-kernels"
@@ -80,12 +80,13 @@ if Git.branch_exists?(BRANCH_NAME, remote: GIT_REMOTE)
   Git.fetch(GIT_REMOTE, commit: commit)
   Git.checkout(commit, name: BRANCH_NAME)
 else
-  # Otherwise create from the current commit
-  Git.checkout(name: BRANCH_NAME)
+  commit = Git.get_remote_commit(GIT_REMOTE, branch: TARGET_BRANCH)
+  # Otherwise create from the default branch
+  Git.checkout(commit, name: BRANCH_NAME)
 end
 
 # Keep track of where we started at.
-initial_revision = Git.current_commit()
+initial_revision = Git.get_remote_commit(GIT_REMOTE, branch: TARGET_BRANCH)
 $stderr.puts ":: Started on revision #{initial_revision.inspect}."
 
 # The updater script will automatically commit if the environment variable is set to `1`.
@@ -117,6 +118,14 @@ Scheduled update for the Linux kernels.
 
 #{Git.git("log", "--format= - %s", "#{initial_revision}..#{final_revision}", get_stdout: true)}
 
+<details>
+<summary>Additional context...</summary>
+
+```
+CI_JOB_URL = #{ENV["CI_JOB_URL"].inspect()}
+```
+
+</details>
 EOD
 
 $stderr.puts "========================="
