@@ -60,6 +60,10 @@ stdenv.mkDerivation (finalAttrs: rec {
       url = "https://salsa.debian.org/xml-sgml-team/libxml2/-/raw/debian/2.12.7+dfsg+really2.9.14-1/debian/patches/CVE-2025-32415.patch";
       hash = "sha256-6QsdimsnHCtNube+XOPywo1nfL2drc93cJnxJEYCbBk=";
     })
+    (fetchpatch {
+      url = "https://sources.debian.org/data/main/libx/libxml2/2.12.7%2Bdfsg%2Breally2.9.14-2.1%2Bdeb13u1/debian/patches/CVE-2025-6021.patch";
+      hash = "sha256-/roupp6Aabn8nYuUE7+1CA2+ouD8f68QbPlLeNX+DoA=";
+    })
   ];
 
   strictDeps = true;
