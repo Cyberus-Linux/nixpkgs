@@ -98,6 +98,14 @@ stdenv.mkDerivation (finalAttrs: {
 
       # https://gitlab.alpinelinux.org/alpine/aports/-/blob/529accc30c6be92e4143a7aaa022bbcd5839ac40/main/binutils/CVE-2025-0840.patch
       ./CVE-2025-0840.patch
+
+      # Backported against CVE patched in the 2.45 series. See:
+      # https://nvd.nist.gov/vuln/detail/CVE-2025-5244
+      ./CVE-2025-5244.diff
+
+      # Backported against CVE patched in the 2.45 series. See:
+      # https://nvd.nist.gov/vuln/detail/CVE-2025-5245
+      ./CVE-2025-5245.diff
     ]
     ++ lib.optional targetPlatform.isiOS ./support-ios.patch
     # Adds AVR-specific options to "size" for compatibility with Atmel's downstream distribution
