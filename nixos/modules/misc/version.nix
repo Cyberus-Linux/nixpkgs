@@ -123,7 +123,7 @@ in
       distroName = mkOption {
         internal = true;
         type = types.str;
-        default = "CtrlOS";
+        default = "CTRL-OS";
         description = "The name of the operating system";
       };
 
