@@ -70,7 +70,7 @@ in
       defaultChannel = mkOption {
         internal = true;
         type = types.str;
-        default = "https://nixos.org/channels/nixos-24.05";
+        default = "https://channels.ctrl-os.com/channel/ctrlos-24.05.tar.xz";
         description = "Default NixOS channel to which the root user is subscribed.";
       };
     };
