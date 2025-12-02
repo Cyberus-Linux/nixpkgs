@@ -45,7 +45,7 @@ in {
       channel = mkOption {
         type = types.nullOr types.str;
         default = null;
-        example = "https://nixos.org/channels/nixos-14.12-small";
+        example = "https://channels.ctrl-os.com/channel/ctrlos-24.05.tar.xz";
         description = ''
           The URI of the NixOS channel to use for automatic
           upgrades. By default, this is the channel set using
