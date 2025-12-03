@@ -375,8 +375,14 @@ in
   config = mkIf cfg.enable {
     environment.etc."nix/nix.conf".source = nixConf;
     nix.settings = {
-      trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
-      substituters = mkAfter [ "https://cache.nixos.org/" ];
+      trusted-public-keys = [
+        "ctrl-os:baPzGxj33zp/P+GAIJXsr8ss9Law+qEEFViX1+flbv8="
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      ];
+      substituters = mkAfter [
+        "https://cache.ctrl-os.com/"
+        "https://cache.nixos.org/"
+      ];
       system-features = mkDefault (
         [ "nixos-test" "benchmark" "big-parallel" "kvm" ] ++
         optionals (pkgs.stdenv.hostPlatform ? gcc.arch) (
