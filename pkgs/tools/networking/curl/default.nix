@@ -140,6 +140,9 @@ stdenv.mkDerivation (finalAttrs: {
 
       # https://curl.se/docs/CVE-2025-14819.html
       ./CVE-2025-14819-openssl-toggling-CURLSSLOPT_NO_PARTIA.patch
+
+      # https://curl.se/docs/CVE-2025-15079.html
+      ./CVE-2025-15079-libssh-set-both-knownhosts-options-to.patch
     ]
     ++ lib.optionals gnutlsSupport [
       # https://curl.se/docs/CVE-2024-8096.html
