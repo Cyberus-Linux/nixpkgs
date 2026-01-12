@@ -137,6 +137,9 @@ stdenv.mkDerivation (finalAttrs: {
       # https://curl.se/docs/CVE-2025-14524.html
       ./CVE-2025-14524-1-curl_sasl-if-redirected-require-per.patch
       ./CVE-2025-14524-2-tests-verify-setting-bearer-and-doi.patch
+
+      # https://curl.se/docs/CVE-2025-14819.html
+      ./CVE-2025-14819-openssl-toggling-CURLSSLOPT_NO_PARTIA.patch
     ]
     ++ lib.optionals gnutlsSupport [
       # https://curl.se/docs/CVE-2024-8096.html
