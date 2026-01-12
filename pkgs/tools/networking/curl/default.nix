@@ -133,6 +133,10 @@ stdenv.mkDerivation (finalAttrs: {
 
       # https://curl.se/docs/CVE-2025-14017.html
       ./CVE-2025-14017-ldap-call-ldap_init-before-setting-th.patch
+
+      # https://curl.se/docs/CVE-2025-14524.html
+      ./CVE-2025-14524-1-curl_sasl-if-redirected-require-per.patch
+      ./CVE-2025-14524-2-tests-verify-setting-bearer-and-doi.patch
     ]
     ++ lib.optionals gnutlsSupport [
       # https://curl.se/docs/CVE-2024-8096.html
