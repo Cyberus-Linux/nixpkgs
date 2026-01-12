@@ -67,6 +67,9 @@
   tests,
   testers,
   fetchpatch,
+
+  # CTRL-OS additions
+  disableLegacySubsystems ? true,
 }:
 
 # Note: this package is used for bootstrapping fetchurl, and thus
@@ -135,6 +138,22 @@ stdenv.mkDerivation (finalAttrs: {
 
   postPatch = ''
     patchShebangs scripts
+  ''
+  # Disable problematic “legacy” subsystems in curl.
+  # This is safer than expecting it won't be built, and finding out later it would have been.
+  # (End-users can remove this additional hardening if needed.)
+  + lib.optionalString (disableLegacySubsystems) ''
+    echo "=> Disabling “legacy” non-Windows LDAP support"
+    (cat "${
+      # The `ldap.c` file is unconditionally being built.
+      # So we need to use the same include/ifdefs setup, or it'll fail even when disabled.
+      builtins.toFile "curl-disable-ldap.c" ''
+        #include "curl_setup.h"
+        #if !defined(CURL_DISABLE_LDAP) && !defined(USE_OPENLDAP)
+        #error Legacy non-Windows LDAP support removed.
+        #endif
+      ''
+    }") > lib/ldap.c
   '';
 
   outputs = [
