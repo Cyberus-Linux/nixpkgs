@@ -143,6 +143,9 @@ stdenv.mkDerivation (finalAttrs: {
 
       # https://curl.se/docs/CVE-2025-15079.html
       ./CVE-2025-15079-libssh-set-both-knownhosts-options-to.patch
+
+      # https://curl.se/docs/CVE-2025-15224.html
+      ./CVE-2025-15224-libssh-require-private-key-or-user-ag.patch
     ]
     ++ lib.optionals gnutlsSupport [
       # https://curl.se/docs/CVE-2024-8096.html
