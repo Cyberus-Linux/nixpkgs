@@ -130,6 +130,9 @@ stdenv.mkDerivation (finalAttrs: {
       # This is required to correctly fix some of the following backports.
       # For CVE-2024-11053 and CVE-2025-0167.
       ./REQUIRED-BACKPORT-url-use-same-credentials-on-redire.patch
+
+      # https://curl.se/docs/CVE-2025-14017.html
+      ./CVE-2025-14017-ldap-call-ldap_init-before-setting-th.patch
     ]
     ++ lib.optionals gnutlsSupport [
       # https://curl.se/docs/CVE-2024-8096.html
