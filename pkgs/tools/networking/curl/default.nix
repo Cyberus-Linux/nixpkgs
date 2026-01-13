@@ -67,6 +67,9 @@
   tests,
   testers,
   fetchpatch,
+
+  # CTRL-OS additions
+  disableLegacySubsystems ? true,
 }:
 
 # Note: this package is used for bootstrapping fetchurl, and thus
@@ -127,6 +130,22 @@ stdenv.mkDerivation (finalAttrs: {
       # This is required to correctly fix some of the following backports.
       # For CVE-2024-11053 and CVE-2025-0167.
       ./REQUIRED-BACKPORT-url-use-same-credentials-on-redire.patch
+
+      # https://curl.se/docs/CVE-2025-14017.html
+      ./CVE-2025-14017-ldap-call-ldap_init-before-setting-th.patch
+
+      # https://curl.se/docs/CVE-2025-14524.html
+      ./CVE-2025-14524-1-curl_sasl-if-redirected-require-per.patch
+      ./CVE-2025-14524-2-tests-verify-setting-bearer-and-doi.patch
+
+      # https://curl.se/docs/CVE-2025-14819.html
+      ./CVE-2025-14819-openssl-toggling-CURLSSLOPT_NO_PARTIA.patch
+
+      # https://curl.se/docs/CVE-2025-15079.html
+      ./CVE-2025-15079-libssh-set-both-knownhosts-options-to.patch
+
+      # https://curl.se/docs/CVE-2025-15224.html
+      ./CVE-2025-15224-libssh-require-private-key-or-user-ag.patch
     ]
     ++ lib.optionals gnutlsSupport [
       # https://curl.se/docs/CVE-2024-8096.html
@@ -135,6 +154,22 @@ stdenv.mkDerivation (finalAttrs: {
 
   postPatch = ''
     patchShebangs scripts
+  ''
+  # Disable problematic “legacy” subsystems in curl.
+  # This is safer than expecting it won't be built, and finding out later it would have been.
+  # (End-users can remove this additional hardening if needed.)
+  + lib.optionalString (disableLegacySubsystems) ''
+    echo "=> Disabling “legacy” non-Windows LDAP support"
+    (cat "${
+      # The `ldap.c` file is unconditionally being built.
+      # So we need to use the same include/ifdefs setup, or it'll fail even when disabled.
+      builtins.toFile "curl-disable-ldap.c" ''
+        #include "curl_setup.h"
+        #if !defined(CURL_DISABLE_LDAP) && !defined(USE_OPENLDAP)
+        #error Legacy non-Windows LDAP support removed.
+        #endif
+      ''
+    }") > lib/ldap.c
   '';
 
   outputs = [
