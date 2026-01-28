@@ -363,6 +363,8 @@ in {
 
     extraMeta = {
       license = lib.licenses.asl20;
+      # knownVulnerabilities or an alternative solution to be added once past 2026-04-09.
+      # See: https://openssl-library.org/policies/releasestrat/index.html
     };
   };
 }
