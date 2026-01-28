@@ -332,6 +332,14 @@ in {
 
     extraMeta = {
       license = lib.licenses.asl20;
+      knownVulnerabilities = [
+        # Weird indentation is for the ` - ` prefix in the error message.
+        ''
+          OpenSSL 3.2 reached end of life on 2025/11/23.
+             This version is not used in this package set.
+             See: https://openssl-library.org/policies/releasestrat/index.html
+        ''
+      ];
     };
   };
 
