@@ -290,8 +290,8 @@ in {
   };
 
   openssl_3 = common {
-    version = "3.0.18";
-    hash = "sha256-2Aw09c+QLczx8bXfXruG0DkuNwSeXXPfGzq65y5P/os=";
+    version = "3.0.19";
+    hash = "sha256-+lpBQ7iq4YvlPvLzyvKaLgdHQwuLx00y2IM1uUq2MHI=";
 
     patches = [
       ./3.0/nix-ssl-cert-file.patch
@@ -332,12 +332,20 @@ in {
 
     extraMeta = {
       license = lib.licenses.asl20;
+      knownVulnerabilities = [
+        # Weird indentation is for the ` - ` prefix in the error message.
+        ''
+          OpenSSL 3.2 reached end of life on 2025/11/23.
+             This version is not used in this package set.
+             See: https://openssl-library.org/policies/releasestrat/index.html
+        ''
+      ];
     };
   };
 
   openssl_3_3 = common {
-    version = "3.3.5";
-    hash = "sha256-nWLAClppA3QMhwPw4AYlf0KdVl07kawam9SkxwAALgE=";
+    version = "3.3.6";
+    hash = "sha256-ItsE88j5qAjJeV3PfScT/0DBLEEOotH2Q1xsnIVYlYs=";
 
     patches = [
       ./3.0/nix-ssl-cert-file.patch
@@ -355,6 +363,8 @@ in {
 
     extraMeta = {
       license = lib.licenses.asl20;
+      # knownVulnerabilities or an alternative solution to be added once past 2026-04-09.
+      # See: https://openssl-library.org/policies/releasestrat/index.html
     };
   };
 }
