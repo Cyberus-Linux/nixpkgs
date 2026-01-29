@@ -2,6 +2,7 @@
   lib,
   stdenv,
   fetchurl,
+  fetchFromGitLab,
   buildPackages,
   pkg-config,
   texinfo,
@@ -35,11 +36,11 @@ assert guiSupport -> !enableMinimal;
 
 stdenv.mkDerivation rec {
   pname = "gnupg";
-  version = "2.4.8";
+  version = "2.4.9";
 
   src = fetchurl {
     url = "mirror://gnupg/gnupg/${pname}-${version}.tar.bz2";
-    hash = "sha256-tYyA15sE0yQ/9JwcP8a1+DE46zeEaJVjvN0GBZUxhhY=";
+    hash = "sha256-3RerLpoE/XnTnYU/WZy8hSBi3bmrUqTd60F2/YswKWQ=";
   };
 
   depsBuildBuild = [ buildPackages.stdenv.cc ];
@@ -68,30 +69,51 @@ stdenv.mkDerivation rec {
   ]
   ++ lib.optionals withTpm2Tss [ tpm2-tss ];
 
+  # FreePG (https://freepg.org) is a set of commonly-used patches for GnuPG that
+  # have not been merged upstream. It is used by Arch Linux, Debian, Fedora and
+  # NixOS, and is maintained by Andrew Gallagher.
+  #
+  # Newer versions of Nixpkgs use the whole patchset. We only pick and
+  # choose here to surprises in behavior.
+  freepgPatches = fetchFromGitLab {
+    domain = "gitlab.com";
+    owner = "freepg";
+    repo = "gnupg";
+    rev = "source-2.4.9-freepg";
+    hash = "sha256-wF+iR0OgnU8VI90NlFOXtN5aCRC0YY/X7sPiDXjJm5M=";
+  };
+
   patches = [
     # Without this, scdaemon isn't linked to libusb, causing smartcards to not work correctly
     ./fix-libusb-include-path.patch
-    ./tests-add-test-cases-for-import-without-uid.patch
-    ./accept-subkeys-with-a-good-revocation-but-no-self-sig.patch
-    ./24-allow-import-of-previously-known-keys-even-without-UI.patch
+    # There are patches in FreePG that deal with RFC4880 compatibility
+    # as well, but for now we stick with this fix.
     ./24-revert-rfc4880bis-defaults.patch
+  ] ++ lib.map (v: "${freepgPatches}/STABLE-BRANCH-2-4-freepg/" + v) [
+    "0002-gpg-accept-subkeys-with-a-good-revocation-but-no-sel.patch"
+    "0003-gpg-allow-import-of-previously-known-keys-even-witho.patch"
+    "0004-tests-add-test-cases-for-import-without-uid.patch"
     # Patch for DoS vuln from https://seclists.org/oss-sec/2022/q3/27
-    ./v3-0001-Disallow-compressed-signatures-and-certificates.patch
+    "0019-Disallow-compressed-signatures-and-certificates.patch"
   ];
 
-  # Switch the default key server to keys.openpgp.org
-  # The original motivation in 2019 was to switch away from the then-default SKS network: https://github.com/NixOS/nixpkgs/pull/63952
-  # In 2021 upstream also switched away, but to keyserver.ubuntu.com: https://dev.gnupg.org/rG47c4e3e00a7ef55f954c14b3c237496e54a853c1,
-  # while NixOS kept the keys.openpgp.org default: https://github.com/NixOS/nixpkgs/pull/159604
-  # TODO: Should this patch be removed so that the now-uncompromised default is used once again?
-  # A significant difference between the two seems to be that keys.openpgp.org is verifying keys, while keyserver.ubuntu.com isn't: https://unix.stackexchange.com/a/694528
-  # The keys.openpgp.org also has a great FAQ: https://keys.openpgp.org/about/faq
-  postPatch = ''
-    sed -i 's,\(hkps\|https\)://keyserver.ubuntu.com,hkps://keys.openpgp.org,g' configure configure.ac doc/dirmngr.texi doc/gnupg.info-1
-  ''
-  + lib.optionalString (stdenv.hostPlatform.isLinux && withPcsc) ''
-    sed -i 's,"libpcsclite\.so[^"]*","${lib.getLib pcsclite}/lib/libpcsclite.so",g' scd/scdaemon.c
-  '';
+  postPatch =
+    # Switch the default key server to keys.openpgp.org
+    # The original motivation in 2019 was to switch away from the then-default SKS network: https://github.com/NixOS/nixpkgs/pull/63952
+    # In 2021 upstream also switched away, but to keyserver.ubuntu.com: https://dev.gnupg.org/rG47c4e3e00a7ef55f954c14b3c237496e54a853c1,
+    # while NixOS kept the keys.openpgp.org default: https://github.com/NixOS/nixpkgs/pull/159604
+    # TODO: Should this patch be removed so that the now-uncompromised default is used once again?
+    # A significant difference between the two seems to be that keys.openpgp.org is verifying keys, while keyserver.ubuntu.com isn't: https://unix.stackexchange.com/a/694528
+    # The keys.openpgp.org also has a great FAQ: https://keys.openpgp.org/about/faq
+    ''
+      substituteInPlace configure configure.ac \
+        --replace-fail "hkps://keyserver.ubuntu.com"  "hkps://keys.openpgp.org"
+      substituteInPlace doc/gnupg.info-1 doc/dirmngr.texi \
+        --replace-fail "https://keyserver.ubuntu.com" "https://keys.openpgp.org"
+    ''
+    + lib.optionalString (stdenv.hostPlatform.isLinux && withPcsc) ''
+      sed -i 's,"libpcsclite\.so[^"]*","${lib.getLib pcsclite}/lib/libpcsclite.so",g' scd/scdaemon.c
+    '';
 
   env.NIX_CFLAGS_COMPILE = lib.optionalString stdenv.hostPlatform.isDarwin "-Wno-implicit-function-declaration";
   configureFlags = [
