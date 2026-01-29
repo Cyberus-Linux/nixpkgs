@@ -5,12 +5,12 @@
 , openssh
 , enableMinimal ? false
 , withPcsc ? !enableMinimal, pcsclite
-, guiSupport ? stdenv.isDarwin, pinentry
-, withTpm2Tss ? !stdenv.isDarwin && !enableMinimal, tpm2-tss
+, guiSupport ? stdenv.hostPlatform.isDarwin, pinentry
+, withTpm2Tss ? !stdenv.hostPlatform.isDarwin && !enableMinimal, tpm2-tss
 , nixosTests
 }:
 
-assert guiSupport -> enableMinimal == false;
+assert guiSupport -> !enableMinimal;
 
 stdenv.mkDerivation rec {
   pname = "gnupg";
@@ -41,7 +41,7 @@ stdenv.mkDerivation rec {
 
   postPatch = ''
     sed -i 's,\(hkps\|https\)://keyserver.ubuntu.com,hkps://keys.openpgp.org,g' configure configure.ac doc/dirmngr.texi doc/gnupg.info-1
-    '' + lib.optionalString (stdenv.isLinux && withPcsc) ''
+    '' + lib.optionalString (stdenv.hostPlatform.isLinux && withPcsc) ''
       sed -i 's,"libpcsclite\.so[^"]*","${lib.getLib pcsclite}/lib/libpcsclite.so",g' scd/scdaemon.c
     '';
 
@@ -56,7 +56,7 @@ stdenv.mkDerivation rec {
   ]
   ++ lib.optional guiSupport "--with-pinentry-pgm=${pinentry}/${pinentry.binaryPath or "bin/pinentry"}"
   ++ lib.optional withTpm2Tss "--with-tss=intel"
-  ++ lib.optional stdenv.isDarwin "--disable-ccid-driver";
+  ++ lib.optional stdenv.hostPlatform.isDarwin "--disable-ccid-driver";
 
   postInstall = if enableMinimal
   then ''
@@ -102,7 +102,7 @@ stdenv.mkDerivation rec {
       frontend applications and libraries are available.  Version 2 of GnuPG
       also provides support for S/MIME.
     '';
-    maintainers = with maintainers; [ fpletz vrthra ];
+    maintainers = with maintainers; [ fpletz ];
     platforms = platforms.all;
     mainProgram = "gpg";
   };
