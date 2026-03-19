@@ -6,18 +6,20 @@
   fixDarwinDylibNames,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "capstone";
-  version = "5.0.1";
+  version = "5.0.7";
 
   src = fetchFromGitHub {
     owner = "capstone-engine";
     repo = "capstone";
-    rev = version;
-    sha256 = "sha256-kKmL5sae9ruWGu1gas1mel9qM52qQOD+zLj8cRE3isg=";
+    rev = finalAttrs.version;
+    hash = "sha256-+6QReHZK+iIXspizy6Kvk7cj016HOKgiaKSaP4h7mao=";
   };
 
-  cmakeFlags = [ "-DBUILD_SHARED_LIBS=ON" ];
+  cmakeFlags = [
+    (lib.cmakeBool "BUILD_SHARED_LIBS" true)
+  ] ++ lib.optionals stdenv.isDarwin [ (lib.cmakeBool "CAPSTONE_BUILD_MACOS_THIN" true) ];
 
   nativeBuildInputs =
     [
@@ -40,4 +42,4 @@ stdenv.mkDerivation rec {
     mainProgram = "cstool";
     platforms = lib.platforms.unix;
   };
-}
+})
