@@ -1,4 +1,5 @@
 { fetchurl, lib, stdenv, buildPackages
+, fetchpatch
 , curl, openssl, zlib, expat, perlPackages, python3, gettext, cpio
 , gnugrep, gnused, gawk, coreutils # needed at runtime by git-filter-branch etc
 , openssh, pcre2, bash
@@ -29,7 +30,7 @@ assert sendEmailSupport -> perlSupport;
 assert svnSupport -> perlSupport;
 
 let
-  version = "2.44.2";
+  version = "2.44.4";
   svn = subversionClient.override { perlBindings = perlSupport; };
   gitwebPerlLibs = with perlPackages; [ CGI HTMLParser CGIFast FCGI FCGIProcManager HTMLTagCloud ];
 in
@@ -42,7 +43,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   src = fetchurl {
     url = "https://www.kernel.org/pub/software/scm/git/git-${version}.tar.xz";
-    hash = "sha256-dlTJSO4LTXGx502MK0tHwvgeA6JqA6tjd8WdYZzGccU=";
+    hash = "sha256-82KWQRxY8hSIq/rPNlxbp3wIrDm8GdOqHvZm5g0toI8=";
   };
 
   outputs = [ "out" ] ++ lib.optional withManual "doc";
@@ -57,6 +58,12 @@ stdenv.mkDerivation (finalAttrs: {
     ./git-sh-i18n.patch
     ./git-send-email-honor-PATH.patch
     ./installCheck-path.patch
+    (fetchpatch {
+      # t: avoid git config syntax from newer releases
+      # (Fixes new tests for older git releases.)
+      url = "https://lore.kernel.org/git/20250708210529.1214574-1-tmz@pobox.com/raw";
+      hash = "sha256-KQP9cZpnGd8Yf5y2MRf5w0jbOSDrRPHpO0kmVTOJJq0=";
+    })
   ] ++ lib.optionals withSsh [
     ./ssh-path.patch
   ];
