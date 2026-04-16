@@ -30,7 +30,7 @@ in
 
 stdenv.mkDerivation rec {
   pname = "libjxl";
-  version = "0.10.2";
+  version = "0.10.5";
 
   outputs = [
     "out"
@@ -41,7 +41,7 @@ stdenv.mkDerivation rec {
     owner = "libjxl";
     repo = "libjxl";
     rev = "v${version}";
-    hash = "sha256-Ip/5fbzt6OfIrHJajnxEe14ppvX1hJ1FSJUBEE/h5YQ=";
+    hash = "sha256-6wwDe1kcW/F6Ng9kgOjmM3BmaV+xyhe3teTky6gFvBo=";
     # There are various submodules in `third_party/`.
     fetchSubmodules = true;
   };
