@@ -14,10 +14,10 @@
 
 stdenv.mkDerivation rec {
   pname = "pahole";
-  version = "1.26";
+  version = "1.27";
   src = fetchzip {
     url = "https://git.kernel.org/pub/scm/devel/pahole/pahole.git/snapshot/pahole-${version}.tar.gz";
-    hash = "sha256-Lf9Z4vHRFplMrUf4VhJ7EDPn+S4RaS1Emm0wyEcG2HU=";
+    hash = "sha256-BwA17lc2yegmOzLfoIu8OmG/PVdc+4sOGzB8Jc4ZjGM=";
   };
 
   nativeBuildInputs = [
@@ -35,6 +35,7 @@ stdenv.mkDerivation rec {
       musl-obstack
     ];
 
+  # https://github.com/acmel/dwarves/pull/51
   patches = [ ./threading-reproducibility.patch ];
 
   # Put libraries in "lib" subdirectory, not top level of $out
