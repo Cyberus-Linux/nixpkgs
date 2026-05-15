@@ -7,6 +7,7 @@
   nasm,
   acpica-tools,
   llvmPackages,
+  fetchpatch,
   fetchurl,
   python3,
   pexpect,
@@ -100,6 +101,14 @@ assert msVarsTemplate -> platformSpecific.${cpuName} ? msVarsArgs;
 edk2.mkDerivation projectDscPath (finalAttrs: {
   pname = "OVMF";
   inherit version;
+
+  patches = [
+    # Implement strpbrk for OpenSSL compatibility.
+    (fetchpatch {
+      url = "https://github.com/tianocore/edk2/commit/2a36117d7af2632d15df624074ac650798c247d6.patch";
+      hash = "sha256-iTBrIIsdv8kLy4j+C0edorNHO/D2USRH6rcNh/U1Rsg=";
+    })
+  ];
 
   outputs = [
     "out"
