@@ -9,23 +9,27 @@
 
 stdenv.mkDerivation rec {
   pname = "libssh2";
-  version = "1.11.0";
+  version = "1.11.1";
 
   src = fetchurl {
     url = "https://www.libssh2.org/download/libssh2-${version}.tar.gz";
-    sha256 = "sha256-NzYWHkHiaTMk3rOMJs/cPv5iCdY0ukJY2xzs/2pa1GE=";
+    hash = "sha256-2ex2y+NNuY7sNTn+LImdJrDIN8s+tGalaw8QnKv2WPc=";
   };
-
-  patches = [
-    # fetchpatch cannot be used due to infinite recursion
-    # https://github.com/libssh2/libssh2/commit/d34d9258b8420b19ec3f97b4cc5bf7aa7d98e35a
-    ./CVE-2023-48795.patch
-  ];
 
   outputs = [
     "out"
     "dev"
     "devdoc"
+  ];
+
+  patches = [
+    # fetchpatch cannot be used due to infinite recursion
+    # https://github.com/libssh2/libssh2/pull/1858/changes/7f521e5fd96860a3f869e9f9c4bc8d149118f5b0
+    ./CVE-2026-7598.patch
+
+    # We've ingested these for good measure.
+    ./window-size-bounds.patch
+    ./input-validation.patch
   ];
 
   propagatedBuildInputs = [ openssl ]; # see Libs: in libssh2.pc

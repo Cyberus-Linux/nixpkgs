@@ -1,0 +1,41 @@
+From f8b9fc5b50282be3b0c59f47a5a4255145880647 Mon Sep 17 00:00:00 2001
+From: Will Cosgrove <will@panic.com>
+Date: Tue, 14 Apr 2026 14:02:34 -0700
+Subject: [PATCH] wincng.c: Additional input validation (#1860)
+
+Notes:
+Validate r and s in _libssh2_wincng_p1363signature_from_point(),
+validate length in _libssh2_wincng_bn_size()
+
+Credit:
+Bruce Dang
+---
+ src/wincng.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/wincng.c b/src/wincng.c
+index 7944b65771..ff2e355963 100644
+--- a/src/wincng.c
++++ b/src/wincng.c
+@@ -1145,7 +1145,7 @@ _libssh2_wincng_bn_size(const unsigned char *bignum, ULONG length)
+ {
+     ULONG offset;
+ 
+-    if(!bignum)
++    if(!bignum || length == 0)
+         return 0;
+ 
+     length--;
+@@ -1932,6 +1932,12 @@ _libssh2_wincng_p1363signature_from_point(IN const unsigned char *r,
+         s_trimmed_len--;
+     }
+ 
++    /* Validate r and s will fit into signature */
++    if(r_trimmed_len > *signature_length / 2 ||
++        s_trimmed_len > *signature_length / 2) {
++        return LIBSSH2_ERROR_INVAL;
++   }
++
+     /* Concatenate into zero-filled buffer and zero-pad if necessary */
+     *signature = calloc(1, *signature_length);
+     if(!*signature) {

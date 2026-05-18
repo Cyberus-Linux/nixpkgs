@@ -1,0 +1,74 @@
+From a0057aef5f9a3a147d619c1c7cf19e4cff47dcbf Mon Sep 17 00:00:00 2001
+From: Will Cosgrove <will@panic.com>
+Date: Mon, 13 Apr 2026 11:19:11 -0700
+Subject: [PATCH] Add window size bounds checking (#1848)
+
+Make sure window size isn't adjusted past uint32 max size.
+
+Credit:
+Asaf Meizner
+---
+ src/channel.c |  8 +++++++-
+ src/packet.c  | 25 ++++++++++++++++---------
+ 2 files changed, 23 insertions(+), 10 deletions(-)
+
+diff --git a/src/channel.c b/src/channel.c
+index afa1512353..15f3c9c323 100644
+--- a/src/channel.c
++++ b/src/channel.c
+@@ -1920,7 +1920,13 @@ _libssh2_channel_receive_window_adjust(LIBSSH2_CHANNEL * channel,
+                               "packet, deferring");
+     }
+     else {
+-        channel->remote.window_size += adjustment;
++        if(adjustment > UINT32_MAX - channel->remote.window_size) {
++            return _libssh2_error(channel->session, LIBSSH2_ERROR_PROTO,
++                                  "Window adjust out of bounds");
++        }
++        else {
++            channel->remote.window_size += adjustment;
++        }
+     }
+ 
+     channel->adjust_state = libssh2_NB_state_idle;
+diff --git a/src/packet.c b/src/packet.c
+index 8574c69b4a..ffc9bb5a22 100644
+--- a/src/packet.c
++++ b/src/packet.c
+@@ -1351,20 +1351,27 @@ _libssh2_packet_add(LIBSSH2_SESSION * session, unsigned char *data,
+                     _libssh2_channel_locate(session,
+                                             _libssh2_ntohu32(data + 1));
+                 if(channelp) {
+-                    channelp->local.window_size += bytestoadd;
++                    if(bytestoadd > UINT32_MAX - channelp->local.window_size) {
++                        rc = _libssh2_error(session, LIBSSH2_ERROR_PROTO,
++                                            "Window adjust out of bounds");
++                    }
++                    else {
++                        channelp->local.window_size += bytestoadd;
+ 
+-                    _libssh2_debug((session, LIBSSH2_TRACE_CONN,
+-                                   "Window adjust for channel %u/%u, "
+-                                   "adding %u bytes, new window_size=%u",
+-                                   channelp->local.id,
+-                                   channelp->remote.id,
+-                                   bytestoadd,
+-                                   channelp->local.window_size));
++                        _libssh2_debug((session, LIBSSH2_TRACE_CONN,
++                                        "Window adjust for channel %u/%u, "
++                                        "adding %u bytes, new window_size=%u",
++                                        channelp->local.id,
++                                        channelp->remote.id,
++                                        bytestoadd,
++                                        channelp->local.window_size));
++                    }
+                 }
+             }
++
+             LIBSSH2_FREE(session, data);
+             session->packAdd_state = libssh2_NB_state_idle;
+-            return 0;
++            return rc;
+         default:
+             break;
+         }
