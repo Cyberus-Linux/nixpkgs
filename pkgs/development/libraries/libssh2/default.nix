@@ -22,6 +22,12 @@ stdenv.mkDerivation rec {
     "devdoc"
   ];
 
+  patches = [
+    # fetchpatch cannot be used due to infinite recursion
+    # https://github.com/libssh2/libssh2/pull/1858/changes/7f521e5fd96860a3f869e9f9c4bc8d149118f5b0
+    ./CVE-2026-7598.patch
+  ];
+
   propagatedBuildInputs = [ openssl ]; # see Libs: in libssh2.pc
   buildInputs = [ zlib ] ++ lib.optional stdenv.hostPlatform.isMinGW windows.mingw_w64;
 
