@@ -26,6 +26,10 @@ stdenv.mkDerivation rec {
     # fetchpatch cannot be used due to infinite recursion
     # https://github.com/libssh2/libssh2/pull/1858/changes/7f521e5fd96860a3f869e9f9c4bc8d149118f5b0
     ./CVE-2026-7598.patch
+
+    # We've ingested these for good measure.
+    ./window-size-bounds.patch
+    ./input-validation.patch
   ];
 
   propagatedBuildInputs = [ openssl ]; # see Libs: in libssh2.pc
