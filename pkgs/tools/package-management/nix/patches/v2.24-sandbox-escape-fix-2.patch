@@ -1,0 +1,131 @@
+From d6cd8352dc672a39e01ea3bbee9fdb4b71567737 Mon Sep 17 00:00:00 2001
+From: Sergei Zimmerman <sergei@zimmerman.foo>
+Date: Fri, 3 Apr 2026 00:21:31 +0300
+Subject: [PATCH 2/2] derivation-builder: Don't use copyFile for FOD output
+ copying, put the output in a temporary directory in the store
+
+Puts the temporary FOD output copies in a temporary directory inside the
+store instead of the (for Linux sandboxed builds) chroot.
+This prevents file overwrite due to symlink following that std::filesystem::copy_file does.
+
+Also applies the same output copying approach for impure derivations that don't
+have network sandboxing and thus are subject to FD smuggling.
+
+Fixes GHSA-g3g9-5vj6-r3gj.
+
+(cherry picked from commit a760af86b3a42aa5ac9d9002929107fe357bf128)
+(cherry picked from commit 716dba6692c42e301a1e769e5eac02a4d6e63150)
+---
+ src/libstore/local-store.hh                   |  2 +
+ .../unix/build/local-derivation-goal.cc       | 60 ++++++++++++-------
+ 2 files changed, 42 insertions(+), 20 deletions(-)
+
+diff --git a/src/libstore/local-store.hh b/src/libstore/local-store.hh
+index a03cfc03b..ef6515d53 100644
+--- a/src/libstore/local-store.hh
++++ b/src/libstore/local-store.hh
+@@ -409,6 +409,8 @@ private:
+     friend struct PathSubstitutionGoal;
+     friend struct SubstitutionGoal;
+     friend struct DerivationGoal;
++    /* Only used for createTempDirInStore. */
++    friend class DerivationBuilderImpl;
+ };
+ 
+ }
+diff --git a/src/libstore/unix/build/local-derivation-goal.cc b/src/libstore/unix/build/local-derivation-goal.cc
+index 82c79f361..10d508480 100644
+--- a/src/libstore/unix/build/local-derivation-goal.cc
++++ b/src/libstore/unix/build/local-derivation-goal.cc
+@@ -2445,6 +2445,13 @@ SingleDrvOutputs LocalDerivationGoal::registerOutputs()
+         assert(output && scratchPath);
+         auto actualPath = toRealPathChroot(worker.store.printStorePath(*scratchPath));
+ 
++        /* An optional file descriptor of a directory used for intermediate
++           operations. */
++        AutoCloseFD tempDirFd;
++        /* RAII cleanup of a temporary directory inside the store that is used
++           for intermediate operations. */
++        std::optional<AutoDelete> delTempDir;
++
+         auto finish = [&](StorePath finalStorePath) {
+             /* Store the final path */
+             finalOutputs.insert_or_assign(outputName, finalStorePath);
+@@ -2592,7 +2599,27 @@ SingleDrvOutputs LocalDerivationGoal::registerOutputs()
+             return newInfo0;
+         };
+ 
+-        ValidPathInfo newInfo = std::visit(overloaded {
++        auto moveOutputToTempDir = [&]() -> void {
++            std::filesystem::path tempDir;
++            std::tie(tempDir, tempDirFd) = getLocalStore().createTempDirInStore();
++            delTempDir.emplace(tempDir);
++
++            auto tmpOutput = tempDir / "x";
++
++            /* Serialise and create a fresh copy of the output to break
++               any stale writable file descriptors. Copy through the
++               serialisation/deserialisation. TODO: Use copyRecursive here and
++               make use of reflinking. */
++            auto source = sinkToSource([&](Sink & nextSink) { dumpPath(actualPath, nextSink); });
++            restorePath(tmpOutput, *source);
++            /* This makes it slightly harder to make sense of the control flow. The rule
++               of thumb is that actualPath points to the current location of the stuff
++               that we'll end up registering. */
++            actualPath = std::move(tmpOutput);
++        };
++
++        ValidPathInfo newInfo = std::visit(
++            overloaded{
+ 
+             [&](const DerivationOutput::InputAddressed & output) {
+                 /* input-addressed case */
+@@ -2618,20 +2645,12 @@ SingleDrvOutputs LocalDerivationGoal::registerOutputs()
+ 
+             [&](const DerivationOutput::CAFixed & dof) {
+                 auto & wanted = dof.ca.hash;
+-
+-                // Replace the output by a fresh copy of itself to make sure
+-                // that there's no stale file descriptor pointing to it
+-                Path tmpOutput = actualPath + ".tmp";
+-                copyFile(
+-                    std::filesystem::path(actualPath),
+-                    std::filesystem::path(tmpOutput), true);
+-
+-                std::filesystem::rename(tmpOutput, actualPath);
+-
+-                auto newInfo0 = newInfoFromCA(DerivationOutput::CAFloating {
+-                    .method = dof.ca.method,
+-                    .hashAlgo = wanted.algo,
+-                });
++                moveOutputToTempDir();
++                auto newInfo0 = newInfoFromCA(
++                    DerivationOutput::CAFloating{
++                        .method = dof.ca.method,
++                        .hashAlgo = wanted.algo,
++                    });
+ 
+                 /* Check wanted hash */
+                 assert(newInfo0.ca);
+@@ -2669,12 +2688,13 @@ SingleDrvOutputs LocalDerivationGoal::registerOutputs()
+             },
+ 
+             [&](const DerivationOutput::Impure & doi) {
+-                return newInfoFromCA(DerivationOutput::CAFloating {
+-                    .method = doi.method,
+-                    .hashAlgo = doi.hashAlgo,
+-                });
++                moveOutputToTempDir();
++                return newInfoFromCA(
++                    DerivationOutput::CAFloating{
++                        .method = doi.method,
++                        .hashAlgo = doi.hashAlgo,
++                    });
+             },
+-
+         }, output->raw);
+ 
+         /* FIXME: set proper permissions in restorePath() so
+-- 
+2.53.0
+

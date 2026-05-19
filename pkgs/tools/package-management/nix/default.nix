@@ -185,6 +185,14 @@ in lib.makeExtensible (self: ({
     version = "2.24.15";
     hash = "sha256-GHqFHLxvRID2IEPUwIfRMp8epYQMFcvG9ogLzfWRbPc=";
     self_attribute_name = "nix_2_24";
+
+    patches = [
+      # Fix for GHSA-g3g9-5vj6-r3gj. The first one might not be
+      # necessary, but looked useful nonetheless.
+      ./patches/v2.24-sandbox-escape-fix-1.patch
+      ./patches/v2.24-sandbox-escape-fix-2.patch
+    ];
+
   }).override (lib.optionalAttrs (stdenv.isDarwin && stdenv.isx86_64) {
     # Fix the following error with the default x86_64-darwin SDK:
     #
