@@ -1,5 +1,5 @@
 include:
-  - project: cyberus/embedded/CTRL-OS-Tooling
+  - project: cyberus/ctrl-os/CTRL-OS-Tooling
     file: gitlab-ci/dtrack-to-gitlab.yml
 
 # Marks a job as being a daily-scheduled job.
