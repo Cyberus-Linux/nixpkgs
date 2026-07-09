@@ -2044,4 +2044,5 @@
       ./image/repart.nix
     ];
   }
+  ../../ctrl-os/modules
 ]
