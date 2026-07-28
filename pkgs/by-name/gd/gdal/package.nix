@@ -3,6 +3,7 @@
   stdenv,
   callPackage,
   fetchFromGitHub,
+  fetchpatch,
 
   useMinimalFeatures ? false,
   useArmadillo ? (!useMinimalFeatures),
@@ -79,8 +80,8 @@
   xz,
   zlib,
   zstd,
+  buildPackages,
 }:
-
 stdenv.mkDerivation (finalAttrs: {
   pname = "gdal" + lib.optionalString useMinimalFeatures "-minimal";
   version = "3.12.4";
@@ -91,6 +92,49 @@ stdenv.mkDerivation (finalAttrs: {
     tag = "v${finalAttrs.version}";
     hash = "sha256-sD/ZAOvMWK2+AGw6wgziDsheH+hwUwhd7i2f65cjFKg=";
   };
+
+  patches = [
+    # Fix build against Poppler >= 26.06 (not yet backported to the 3.12.x branch upstream)
+    # https://github.com/OSGeo/gdal/issues/14714
+    (fetchpatch {
+      name = "0001- poppler-add-compatibility-with-future-26.06.patch";
+      url = "https://github.com/OSGeo/gdal/commit/cbad3ef7824dcad235e95581127dbc4df696d6d3.patch";
+      hash = "sha256-tJsUcBorYDF0eNzKMHDc+qUvovlIQ7WrRsePbmKmIT8=";
+    })
+    (fetchpatch {
+      name = "0002-poppler-add-compatibility-with-future-26.06-continuation.patch";
+      url = "https://github.com/OSGeo/gdal/commit/b3f839f2515b023e4a7cf099b7ce1626ccb24eac.patch";
+      hash = "sha256-XtYUjulIiOknIE5e7AcRCThPvmSLP0QRbONUBF+KTxE=";
+    })
+    (fetchpatch {
+      name = "0003-pdf-fix-build-against-latest-poppler.patch";
+      url = "https://github.com/OSGeo/gdal/commit/581a86960d68e426b50384ed6e45ecb935f0f2a1.patch";
+      hash = "sha256-VsOq+lQ6QhXKHFOeqdGFXRmtFR90FOJyTdYK5NFgB5U=";
+    })
+    (fetchpatch {
+      name = "0004-pdf-fix-build-against-poppler-26.05.99dev.patch";
+      url = "https://github.com/OSGeo/gdal/commit/7b8b8de28bbd200b0fd3b09147fdc68b5bf5ce20.patch";
+      hash = "sha256-BxWMpiUwM3h7Vo9vxJ4H4A8aQfE3jcSRfRYwaLw/60w=";
+    })
+
+    # Fix stack buffer overflow in netCDF driver
+    # https://github.com/OSGeo/gdal/issues/14594
+    (fetchpatch {
+      name = "0005-netcdf-avoid-reading-attributes-without-checking-length.patch";
+      url = "https://github.com/OSGeo/gdal/commit/50eea7456d83c9586f112ef96b43249372839dea.patch";
+      hash = "sha256-m1FsBC37h2uuaEeYezPZJFsDR6Ix/FDIZnuZZiSAYcw=";
+    })
+
+    # Fix tests with libtiff 4.7.2
+    # FAILED gcore/tiff_read.py::test_tiff_read_stripbytecounts_count_not_same_as_stripoffsets_count -
+    #     AssertionError: assert '170' is None
+    (fetchpatch {
+      name = "0006-Internal-libtiff-resync-with-4.7.2rc3-and-adjust-tes.patch";
+      url = "https://github.com/OSGeo/gdal/commit/06ffb0333fe557cde262aa1e81466dda42684c53.patch";
+      hash = "sha256-teZ9cv8JQ2ua4tEWl3I8D9DYo8srGIBYIc2NfkgNMe4=";
+      includes = [ "autotest/gcore/tiff_read.py" ];
+    })
+  ];
 
   nativeBuildInputs = [
     bison
@@ -132,6 +176,9 @@ stdenv.mkDerivation (finalAttrs: {
     # This is not strictly needed as the Java bindings wouldn't build anyway if
     # ant/jdk were not available.
     "-DBUILD_JAVA_BINDINGS=OFF"
+  ]
+  ++ lib.optionals (!stdenv.buildPlatform.canExecute stdenv.hostPlatform) [
+    "-DCMAKE_CROSSCOMPILING_EMULATOR=${stdenv.hostPlatform.emulator buildPackages}"
   ];
 
   buildInputs =
