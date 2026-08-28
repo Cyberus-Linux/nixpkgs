@@ -2047,5 +2047,5 @@
       ./image/repart.nix
     ];
   }
-  ../../ctrl-os/modules
+  ../../cyberus-linux/modules
 ]

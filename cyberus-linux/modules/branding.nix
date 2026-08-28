@@ -7,12 +7,12 @@ in
     system.nixos = lib.attrsets.mapAttrs (_: mkDistroOverride) {
       vendorName = "Cyberus Technology GmbH";
 
-      distroName = "CTRL-OS";
-      distroId = "ctrl-os";
+      distroName = "Cyberus Linux";
+      distroId = "cyberus-linux";
     };
 
     system.defaultChannel =
-      mkDistroOverride "https://channels.ctrl-os.com/channel/ctrlos-${config.system.nixos.release}.tar.xz";
+      mkDistroOverride "https://channels.cyberus-linux.com/channel/cyberus-linux-${config.system.nixos.release}.tar.xz";
 
     nix.settings = {
       trusted-public-keys = [
@@ -20,7 +20,7 @@ in
       ];
 
       substituters = [
-        "https://cache.ctrl-os.com/"
+        "https://cache.cyberus-linux.com/"
       ];
     };
   };
