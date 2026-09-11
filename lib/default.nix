@@ -613,4 +613,25 @@ let
     }
   );
 in
-lib
+builtins.abort ''
+
+
+  ############################## ACTION REQUIRED #################################
+  #                                                                              #
+  # The Cyberus Linux repository and the stable branch have been renamed. The    #
+  # new name of the GitHub organization is cyberus-linux. The stable branch is   #
+  # now cyberus-linux-26.05. The ctrlos-26.05 branch will not be updated         #
+  # anymore.                                                                     #
+  #                                                                              #
+  # Instead of pulling Cyberus Linux from GitHub, please consider using our      #
+  # channel to get the latest tested and pre-built version.                      #
+  # Check this URL to find the correct channel URL:                              #
+  #                                                                              #
+  #                   https://docs.cyberus-linux.com/downloads                   #
+  #                                                                              #
+  # In case you encounter any issues, please get in touch:                       #
+  #                                                                              #
+  #                    https://docs.cyberus-linux.com/support                    #
+  #                                                                              #
+  ################################################################################
+''
