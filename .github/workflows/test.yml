@@ -81,7 +81,7 @@ jobs:
               '.github/workflows/test.yml',
               'ci/github-script/bot.js',
               'ci/github-script/check-target-branch.ts',
-              'ci/github-script/commits.js',
+              'ci/github-script/commits.ts',
               'ci/github-script/get-pr-commit-details.js',
               'ci/github-script/lint-commits.js',
               'ci/github-script/manual-file-edits.ts',
@@ -103,7 +103,7 @@ jobs:
     if: needs.prepare.outputs.merge-group
     name: Merge Group
     needs: [prepare]
-    uses: ./.github/workflows/merge-group.yml
+    uses: $/.github/workflows/merge-group.yml
     # Those are actually only used on the merge_group event, but will throw an error if not set.
     permissions:
       pull-requests: write # unused on pull_request, required by merge-group workflow
@@ -117,7 +117,7 @@ jobs:
     if: needs.prepare.outputs.pr
     name: PR
     needs: [prepare]
-    uses: ./.github/workflows/pull-request-target.yml
+    uses: $/.github/workflows/pull-request-target.yml
     # Those are actually only used on the pull_request_target event, but will throw an error if not set.
     permissions:
       issues: write # unused on pull_request, required by bot workflow
