@@ -102,6 +102,9 @@ buildPythonPackage rec {
     "tests/test_ext_autodoc/test_ext_autodoc_preserve_defaults.py"
     "tests/test_util/test_util_inspect.py"
     "tests/test_util/test_util_typing.py"
+  ] ++ [
+    # See: https://github.com/NixOS/nixpkgs/pull/569174#issuecomment-5941283465
+    "tests/test_ext_autodoc/test_ext_autodoc_autofunction.py"
   ];
 
   disabledTests = [
