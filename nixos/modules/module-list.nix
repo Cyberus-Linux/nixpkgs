@@ -2051,4 +2051,5 @@
       ./image/repart.nix
     ];
   }
+  ../../cyberus-linux/modules
 ]

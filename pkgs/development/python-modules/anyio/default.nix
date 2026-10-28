@@ -41,6 +41,11 @@ buildPythonPackage rec {
     hash = "sha256-W2uR1VwI9u4QIPmbcYp8jDatEdya97NaJwAABlaRHzM=";
   };
 
+  patches = [
+    # Minimal backported version of: https://github.com/agronholm/anyio/pull/1374
+    ./fix-sslcontext-wrap-bio.patch
+  ];
+
   build-system = [ setuptools-scm ];
 
   dependencies = [

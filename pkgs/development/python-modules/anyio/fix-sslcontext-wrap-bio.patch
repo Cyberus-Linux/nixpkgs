@@ -1,0 +1,35 @@
+From efac769a0b65322c3505c01b827efe026cd7081a Mon Sep 17 00:00:00 2001
+From: Julian Stecklina <julian.stecklina@cyberus-technology.de>
+Date: Fri, 2 Oct 2026 11:09:08 +0200
+Subject: [PATCH] Fix SSLContext.wrap_bio by only passing hostname on client
+
+See: https://github.com/agronholm/anyio/pull/1374
+---
+ src/anyio/streams/tls.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/anyio/streams/tls.py b/src/anyio/streams/tls.py
+index e2a7ca5..533564e 100644
+--- a/src/anyio/streams/tls.py
++++ b/src/anyio/streams/tls.py
+@@ -145,7 +145,7 @@ class TLSStream(ByteStream):
+         # but the standard library implementation won't
+         if type(ssl_context) is ssl.SSLContext:
+             ssl_object = ssl_context.wrap_bio(
+-                bio_in, bio_out, server_side=server_side, server_hostname=hostname
++                bio_in, bio_out, server_side=server_side, server_hostname=None if server_side else hostname
+             )
+         else:
+             ssl_object = await to_thread.run_sync(
+@@ -153,7 +153,7 @@ class TLSStream(ByteStream):
+                 bio_in,
+                 bio_out,
+                 server_side,
+-                hostname,
++                None if server_side else hostname,
+                 None,
+             )
+ 
+-- 
+2.55.0
+
