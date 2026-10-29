@@ -53,6 +53,18 @@ buildPythonPackage rec {
     hash = "sha256-8wKTcmnep67zBMYgd6Gpr3wRCIrzYaqfytL1o7iBNAk=";
   };
 
+  patches = [
+    # Upstream broke imageio by merging an incompatible pillow version.
+    # Until upstream sorts this out, let's try to make it work with a patch.
+    #
+    # Nixpkgs PR that broke it:
+    # https://github.com/NixOS/nixpkgs/pull/575490#issuecomment-6439917658
+    #
+    # Imageio PR for the Pillow version upgrade:
+    # https://github.com/imageio/imageio/pull/1248
+    ./fix-pillow-13-fromarray-mode.patch
+  ];
+
   postPatch = lib.optionalString (!stdenv.hostPlatform.isDarwin) ''
     substituteInPlace tests/test_core.py \
       --replace-fail 'ctypes.util.find_library("GL")' '"${libgl}"'
