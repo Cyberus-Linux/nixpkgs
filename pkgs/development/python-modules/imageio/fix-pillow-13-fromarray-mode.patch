@@ -1,0 +1,41 @@
+diff --git a/imageio/plugins/pillow.py b/imageio/plugins/pillow.py
+index 83d534f..d6795b2 100644
+--- a/imageio/plugins/pillow.py
++++ b/imageio/plugins/pillow.py
+@@ -442,7 +442,14 @@ class PillowPlugin(PluginV3):
+             ndimage = ndimage[None, ...]
+ 
+         for frame in ndimage:
+-            pil_frame = Image.fromarray(frame, mode=mode)
++            try:
++                pil_frame = Image.fromarray(frame, mode=mode)
++            except ValueError:
++                # Pillow 13 rejects some explicit modes (e.g. uint16 with
++                # "I;16") even if they match the mode it would pick itself.
++                pil_frame = Image.fromarray(frame)
++                if pil_frame.mode != mode:
++                    raise
+             if "bits" in kwargs:
+                 pil_frame = pil_frame.quantize(colors=2 ** kwargs["bits"])
+             self.images_to_write.append(pil_frame)
+diff --git a/imageio/plugins/pillow_legacy.py b/imageio/plugins/pillow_legacy.py
+index 9007c87..4e5d1fe 100644
+--- a/imageio/plugins/pillow_legacy.py
++++ b/imageio/plugins/pillow_legacy.py
+@@ -816,7 +816,15 @@ def ndarray_to_pil(arr, format_str=None, prefer_uint8=True):
+             im = Image.frombytes(mode, image_shape, array_buffer)
+         return im
+     else:
+-        return Image.fromarray(arr, mode)
++        try:
++            return Image.fromarray(arr, mode)
++        except ValueError:
++            # Pillow 13 rejects some explicit modes (e.g. uint16 with
++            # "I;16") even if they match the mode it would pick itself.
++            im = Image.fromarray(arr)
++            if im.mode != mode:
++                raise
++            return im
+ 
+ 
+ # imported for backwards compatibility
