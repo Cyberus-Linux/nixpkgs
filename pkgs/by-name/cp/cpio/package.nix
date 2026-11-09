@@ -41,6 +41,12 @@ stdenv.mkDerivation (finalAttrs: {
     })
   ];
 
+  # The CVE-2026-66486 patch touches doc/cpio.texi, so the info manual gets
+  # rebuilt with the file's mtime as its date. Reset it for reproducibility.
+  postPatch = ''
+    touch -d "@$SOURCE_DATE_EPOCH" doc/cpio.texi
+  '';
+
   nativeBuildInputs = [
     autoreconfHook
     texinfo # for makeinfo
