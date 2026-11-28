@@ -4300,6 +4300,12 @@
     github = "c4f3z1n";
     githubId = 22820003;
   };
+  C4N-6 = {
+    name = "Can Pekkan";
+    email = "pekkan.ct@gmail.com";
+    github = "C4N-6";
+    githubId = 82795828;
+  };
   c4patino = {
     name = "Ceferino Patino";
     email = "c4patino@gmail.com";
@@ -13937,6 +13943,12 @@
     github = "kaasboteram";
     githubId = 168290368;
     email = "luuk.machielse@gmail.com";
+  };
+  kaayzouee = {
+    name = "Andre";
+    email = "kaayzouee@gmail.com";
+    github = "kaayzouee";
+    githubId = 193052566;
   };
   kachick = {
     email = "kachick1@gmail.com";
@@ -29048,8 +29060,8 @@
     email = "xor@vavakado.xyz";
     github = "vavakado";
     githubId = 80159210;
-    name = "Vladimir Rubin";
-    matrix = "@vavakado:imagisphe.re";
+    name = "Kiran Rubin";
+    matrix = "@vavakado:federated.nexus";
     keys = [ { fingerprint = "A054 0374 CD37 2C71 FE6D  E0CF CAB7 4472 7F36 B524"; } ];
   };
   vbgl = {
